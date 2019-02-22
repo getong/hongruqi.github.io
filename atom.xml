@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Water的博客</title>
+  <title>猛犸象团队博客</title>
   
   <subtitle>2019，行者无疆</subtitle>
   <link href="/atom.xml" rel="self"/>
@@ -10,7 +10,7 @@
   <id>https://hongruqi.github.io/</id>
   
   <author>
-    <name>water</name>
+    <name>猛犸象</name>
     
   </author>
   
