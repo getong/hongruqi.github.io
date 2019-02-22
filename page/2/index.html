@@ -346,6 +346,17 @@
 
           
           
+             <span id="/2016/07/21/UIWindow 整理/" class="leancloud_visitors" data-flag-title="UIWindow 整理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
 
           
 
@@ -494,6 +505,17 @@
           
 
           
+          
+             <span id="/2016/07/20/iOS 性能提升总结/" class="leancloud_visitors" data-flag-title="iOS 性能提升总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
           
 
           
@@ -687,187 +709,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2016/07/16/Bonjour！实现零配置网络联网的解决方案/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="water">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Water的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/07/16/Bonjour！实现零配置网络联网的解决方案/" itemprop="url">Bonjour！实现零配置网络联网的解决方案</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-16T00:00:00+08:00">
-                2016-07-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/iOS/" itemprop="url" rel="index">
-                    <span itemprop="name">iOS</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Bonjour！实现零配置网络联网的解决方案"><a href="#Bonjour！实现零配置网络联网的解决方案" class="headerlink" title="Bonjour！实现零配置网络联网的解决方案"></a>Bonjour！实现零配置网络联网的解决方案</h1><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>简单介绍一下项目对本地网络连接的需求：车机连接移动设备。</p>
-<p>那我们如何进行连接呢。</p>
-<ol>
-<li><p>首先我们想到的最简单的方法就是通过IP连接。</p>
-</li>
-<li><p>UDP广播。</p>
-</li>
-</ol>
-<p>利用UDP广播我们能向同一本地网络所有设备发送一条消息,接收到信息后我们能够解析出发送方的端口和IP。</p>
-<p>问题：</p>
-<ol>
-<li>耗电问题。不断的UDP Broadcast 会耗费大量电源。</li>
-<li>网络阻塞问题。因为UDP广播会对同一本地网络的所有Host都发送信息。过于密集的发送,有可能会造成网络的堵塞。</li>
-<li>稳定性,UDP Socket可能会因为各种情况而中断。</li>
-</ol>
-<h3 id="什么是-Bonjour"><a href="#什么是-Bonjour" class="headerlink" title="什么是 Bonjour ?"></a>什么是 Bonjour ?</h3><p><strong>bonjour</strong> 是苹果公司发布的一个基于 <strong>ZEROCONF</strong> 工作组 <strong>(IETF</strong>下属小组) 的工作,用于实现零配置网络联网的解决方案。<strong>Bonjour</strong>是基于<strong>IP</strong>层协议的。</p>
-<p>Bonjour是Apple推出的零配置网络协议，主要的目的是在缺少中心服务器的情况下解决网络设备的IP获取，名称解析和服务发现等关键问题。</p>
-<h3 id="Bonjour可以做什么"><a href="#Bonjour可以做什么" class="headerlink" title="Bonjour可以做什么"></a>Bonjour可以做什么</h3><hr>
-<p> Bonjour可以完成的工作主要是在缺少中心服务器的情况下解决IP获取，名称解析和服务发现这三个问题。</p>
-<ul>
-<li>IP获取<br>在传统网络环境下，设备的IP地址通过两种方式获取，一种是静态配置，通过手工方式为设备指定一个IP地址，一种是动态配置，设备通过路由器的DHCP服务获得动态的IP地址。<br>在无中心服务器的网络环境下，没有中心服务器提供DHCP服务，用户手工配置IP地址也很不方便，这就需要一种新的方式来帮助设备获取IP地址，就是希望设备可以主动为自己指定一个可用的IP地址。<br>在IPV6环境下，IPV6协议本身就提供了设备自指定IP地址的能力，所以实现很简单，直接使用IPV6的协议支持就可以了。<br>在IPV4环境下，Bonjour使用了随机指定IP地址的方法，首先为设备随机指定一个属于本地网段的IP地址，然后检查该地址在本地是否有冲突，如果有冲突就随机生成另一个新的IP地址，直到找到可用IP地址为止。<br>我在做测试的时候没有测试这部分，都是使用的DHCP的动态地址。以后有时间测试了这个部分后再和大家分享测试结果。</li>
-<li><strong><em>**</em></strong>名称解析<strong><em>**</em></strong><br>在传统网络环境下，名称和IP地址的对应关系是通过DNS服务解析的。当一个设备需要访问一个域名，如“<a href="http://www.abc.com”，设备将“www.abc.com”发给DNS服务器，服务器返回该域名对应的IP地址，设备再使用返回的IP地址对目标服务器进行访问。" target="_blank" rel="noopener">www.abc.com”，设备将“www.abc.com”发给DNS服务器，服务器返回该域名对应的IP地址，设备再使用返回的IP地址对目标服务器进行访问。</a><br>在没有中心服务器的网络环境中，没有DNS服务器提供域名解析服务，名称解析变成一个严重问题。针对这一问题，业界的解决方案是mDNS，中文叫“组播DNS”，在标准文档RFC6762中定义。<br>“组播DNS”的原理很简单，当一个设备需要解析一个名称时，如“abc.local”，这个设备通过UDP协议向本地网络中的所有设备广播一个消息，问谁是“abc.local”，本地网络中如果有一个设备认为自己是“abc.local”，它就给出响应，说出自己的IP地址。<br>因为“组播DNS”基于UDP协议，采用广播消息的方式，所以不需要一个中心服务器提供DNS解析服务就可以完成本地的名称解析。<br>Bonjour也是基于mDNS协议的，不过Bonjour在mDNS协议上作了扩展，加强了设备响应“组播DNS”请求的能力。在Bonjour协议下，应用只需要对某个名称进行注册，就可以将响应“组播DNS”请求的工作交由底层处理。也就是说在Bonjour协议下，应用不需要侦听本地网络的“组播DNS”请求并进行响应，这些工作由底层系统完成。<br>为了区分全球域名和本地域名，mDNS协议使用“.local.”作为本地域名的根域名。</li>
-<li><strong><em>**</em></strong>服务搜索（自动在网络搜索服务）<strong><em>**</em></strong><br>当一个提供服务的设备获取IP地址，并自我指定一个域名后，其实还是不能满足用户的需求。因为用户需要的是某种服务，如打印服务，web服务，用户并不关心这些服务对应的服务器名称和它的IP地址。<br>为了让用户更容易发现本地网络中的各种服务，Bonjour为设备提供了服务发现的能力。<br>Bonjour提供的“服务发现”能力基于一个简单直接的规定，就是提供服务的设备在按以下标准对服务进行注册：“名称.服务类型.传输协议类型.local.”，比如：“DamonWebServer._http._tcp.local.”，又比如“DummiesWebServer._http._tcp.local.”。<br>这样，当一个设备使用希望查找http服务的时候，Bonjour会去查找本地网络中注册过的包含”_http”的服务，然后将结果返回给用户选择。这时用户面对的是“DamonWebServer”和”DummiesWebServer”，用户可以不去关心到底这两个web服务到底在那台设备上，该设备的IP地址是什么。<br>###如何使用Bonjour</li>
-</ul>
-<hr>
-<p> 对于最终用户来讲，Bonjour基本上是透明的，他们不需要了解如何去使用Bonjour，往往都是应用开发者去考虑如何使用Bonjour。<br> 对于应用开发者来讲，他们需要考虑有两部分，一是如何作为Bonjour客户端去发现使用本地服务，二是如何作为服务端如何注册Bonjour服务</p>
-<ul>
-<li>如何作为Bonjour客户端去发现本地服务<br>iOS开发可以使用NSNetService框架中的NSNetServiceBrowser类去发现本地服务。<br>基本过程如下：<br>首先创建NSNetServiceBrowser实例：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">    serviceBrowser = [[NSNetServiceBrowser alloc] init];</span><br><span class="line">    serviceBrowser.delegate = self;</span><br><span class="line">    [serviceBrowser searchForServicesOfType:@&quot;_http._tcp.&quot; inDomain:@&quot;local.&quot;];</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> - (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didFindService:(NSNetService *)netService moreComing:(BOOL)moreServicesComing &#123;</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>如何作为服务端注册Bonjour服务<br>要注册成为Bonjour服务，开发者可以直接创建NSNetService实例，<br>并通过initwithDomain:type:name:port:方法进行初始化，指定服务的域，类型，名称和端口，样例代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">    service = [[NSNetService alloc] initWithDomain:@&quot;local.&quot; type:@&quot;_http._tcp.&quot; name:@&quot;DamonWebServer&quot; port:port];</span><br></pre></td></tr></table></figure>
-<p>NSNetService创建成功后，可以通过setDelegate指定代理，同时通过publish方法发布注册服务：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">        [service setDelegate:self];</span><br><span class="line">        [service publish];</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p> 其中指定的代理需要遵从“NSNetServiceDelegate”协议，可以对服务发布成功，发布失败等事件。</p>
-<p> 正常来讲，如果需要发布一个服务，需要在发布服务之前准备好服务并启动它。不过NSNetService的publish方法并不依赖它所发布的服务，不管服务是否准备好，是否启动，NSNetService的publish都可以成功将服务发布出去，只不过服务发布出去后其它使用这个服务的客户端会发现这个发布出来的服务是个无效服务。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2016/07/16/iOS 适配 & 开发策略/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -938,6 +779,17 @@
           
 
           
+          
+             <span id="/2016/07/16/iOS 适配 & 开发策略/" class="leancloud_visitors" data-flag-title="iOS 适配 & 开发策略">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
           
 
           
@@ -1245,6 +1097,198 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2016/07/16/Bonjour！实现零配置网络联网的解决方案/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Water的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2016/07/16/Bonjour！实现零配置网络联网的解决方案/" itemprop="url">Bonjour！实现零配置网络联网的解决方案</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-16T00:00:00+08:00">
+                2016-07-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2016/07/16/Bonjour！实现零配置网络联网的解决方案/" class="leancloud_visitors" data-flag-title="Bonjour！实现零配置网络联网的解决方案">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Bonjour！实现零配置网络联网的解决方案"><a href="#Bonjour！实现零配置网络联网的解决方案" class="headerlink" title="Bonjour！实现零配置网络联网的解决方案"></a>Bonjour！实现零配置网络联网的解决方案</h1><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>简单介绍一下项目对本地网络连接的需求：车机连接移动设备。</p>
+<p>那我们如何进行连接呢。</p>
+<ol>
+<li><p>首先我们想到的最简单的方法就是通过IP连接。</p>
+</li>
+<li><p>UDP广播。</p>
+</li>
+</ol>
+<p>利用UDP广播我们能向同一本地网络所有设备发送一条消息,接收到信息后我们能够解析出发送方的端口和IP。</p>
+<p>问题：</p>
+<ol>
+<li>耗电问题。不断的UDP Broadcast 会耗费大量电源。</li>
+<li>网络阻塞问题。因为UDP广播会对同一本地网络的所有Host都发送信息。过于密集的发送,有可能会造成网络的堵塞。</li>
+<li>稳定性,UDP Socket可能会因为各种情况而中断。</li>
+</ol>
+<h3 id="什么是-Bonjour"><a href="#什么是-Bonjour" class="headerlink" title="什么是 Bonjour ?"></a>什么是 Bonjour ?</h3><p><strong>bonjour</strong> 是苹果公司发布的一个基于 <strong>ZEROCONF</strong> 工作组 <strong>(IETF</strong>下属小组) 的工作,用于实现零配置网络联网的解决方案。<strong>Bonjour</strong>是基于<strong>IP</strong>层协议的。</p>
+<p>Bonjour是Apple推出的零配置网络协议，主要的目的是在缺少中心服务器的情况下解决网络设备的IP获取，名称解析和服务发现等关键问题。</p>
+<h3 id="Bonjour可以做什么"><a href="#Bonjour可以做什么" class="headerlink" title="Bonjour可以做什么"></a>Bonjour可以做什么</h3><hr>
+<p> Bonjour可以完成的工作主要是在缺少中心服务器的情况下解决IP获取，名称解析和服务发现这三个问题。</p>
+<ul>
+<li>IP获取<br>在传统网络环境下，设备的IP地址通过两种方式获取，一种是静态配置，通过手工方式为设备指定一个IP地址，一种是动态配置，设备通过路由器的DHCP服务获得动态的IP地址。<br>在无中心服务器的网络环境下，没有中心服务器提供DHCP服务，用户手工配置IP地址也很不方便，这就需要一种新的方式来帮助设备获取IP地址，就是希望设备可以主动为自己指定一个可用的IP地址。<br>在IPV6环境下，IPV6协议本身就提供了设备自指定IP地址的能力，所以实现很简单，直接使用IPV6的协议支持就可以了。<br>在IPV4环境下，Bonjour使用了随机指定IP地址的方法，首先为设备随机指定一个属于本地网段的IP地址，然后检查该地址在本地是否有冲突，如果有冲突就随机生成另一个新的IP地址，直到找到可用IP地址为止。<br>我在做测试的时候没有测试这部分，都是使用的DHCP的动态地址。以后有时间测试了这个部分后再和大家分享测试结果。</li>
+<li><strong><em>**</em></strong>名称解析<strong><em>**</em></strong><br>在传统网络环境下，名称和IP地址的对应关系是通过DNS服务解析的。当一个设备需要访问一个域名，如“<a href="http://www.abc.com”，设备将“www.abc.com”发给DNS服务器，服务器返回该域名对应的IP地址，设备再使用返回的IP地址对目标服务器进行访问。" target="_blank" rel="noopener">www.abc.com”，设备将“www.abc.com”发给DNS服务器，服务器返回该域名对应的IP地址，设备再使用返回的IP地址对目标服务器进行访问。</a><br>在没有中心服务器的网络环境中，没有DNS服务器提供域名解析服务，名称解析变成一个严重问题。针对这一问题，业界的解决方案是mDNS，中文叫“组播DNS”，在标准文档RFC6762中定义。<br>“组播DNS”的原理很简单，当一个设备需要解析一个名称时，如“abc.local”，这个设备通过UDP协议向本地网络中的所有设备广播一个消息，问谁是“abc.local”，本地网络中如果有一个设备认为自己是“abc.local”，它就给出响应，说出自己的IP地址。<br>因为“组播DNS”基于UDP协议，采用广播消息的方式，所以不需要一个中心服务器提供DNS解析服务就可以完成本地的名称解析。<br>Bonjour也是基于mDNS协议的，不过Bonjour在mDNS协议上作了扩展，加强了设备响应“组播DNS”请求的能力。在Bonjour协议下，应用只需要对某个名称进行注册，就可以将响应“组播DNS”请求的工作交由底层处理。也就是说在Bonjour协议下，应用不需要侦听本地网络的“组播DNS”请求并进行响应，这些工作由底层系统完成。<br>为了区分全球域名和本地域名，mDNS协议使用“.local.”作为本地域名的根域名。</li>
+<li><strong><em>**</em></strong>服务搜索（自动在网络搜索服务）<strong><em>**</em></strong><br>当一个提供服务的设备获取IP地址，并自我指定一个域名后，其实还是不能满足用户的需求。因为用户需要的是某种服务，如打印服务，web服务，用户并不关心这些服务对应的服务器名称和它的IP地址。<br>为了让用户更容易发现本地网络中的各种服务，Bonjour为设备提供了服务发现的能力。<br>Bonjour提供的“服务发现”能力基于一个简单直接的规定，就是提供服务的设备在按以下标准对服务进行注册：“名称.服务类型.传输协议类型.local.”，比如：“DamonWebServer._http._tcp.local.”，又比如“DummiesWebServer._http._tcp.local.”。<br>这样，当一个设备使用希望查找http服务的时候，Bonjour会去查找本地网络中注册过的包含”_http”的服务，然后将结果返回给用户选择。这时用户面对的是“DamonWebServer”和”DummiesWebServer”，用户可以不去关心到底这两个web服务到底在那台设备上，该设备的IP地址是什么。<br>###如何使用Bonjour</li>
+</ul>
+<hr>
+<p> 对于最终用户来讲，Bonjour基本上是透明的，他们不需要了解如何去使用Bonjour，往往都是应用开发者去考虑如何使用Bonjour。<br> 对于应用开发者来讲，他们需要考虑有两部分，一是如何作为Bonjour客户端去发现使用本地服务，二是如何作为服务端如何注册Bonjour服务</p>
+<ul>
+<li>如何作为Bonjour客户端去发现本地服务<br>iOS开发可以使用NSNetService框架中的NSNetServiceBrowser类去发现本地服务。<br>基本过程如下：<br>首先创建NSNetServiceBrowser实例：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">    serviceBrowser = [[NSNetServiceBrowser alloc] init];</span><br><span class="line">    serviceBrowser.delegate = self;</span><br><span class="line">    [serviceBrowser searchForServicesOfType:@&quot;_http._tcp.&quot; inDomain:@&quot;local.&quot;];</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> - (void)netServiceBrowser:(NSNetServiceBrowser *)netServiceBrowser didFindService:(NSNetService *)netService moreComing:(BOOL)moreServicesComing &#123;</span><br><span class="line">｝</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>如何作为服务端注册Bonjour服务<br>要注册成为Bonjour服务，开发者可以直接创建NSNetService实例，<br>并通过initwithDomain:type:name:port:方法进行初始化，指定服务的域，类型，名称和端口，样例代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">    service = [[NSNetService alloc] initWithDomain:@&quot;local.&quot; type:@&quot;_http._tcp.&quot; name:@&quot;DamonWebServer&quot; port:port];</span><br></pre></td></tr></table></figure>
+<p>NSNetService创建成功后，可以通过setDelegate指定代理，同时通过publish方法发布注册服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">        [service setDelegate:self];</span><br><span class="line">        [service publish];</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p> 其中指定的代理需要遵从“NSNetServiceDelegate”协议，可以对服务发布成功，发布失败等事件。</p>
+<p> 正常来讲，如果需要发布一个服务，需要在发布服务之前准备好服务并启动它。不过NSNetService的publish方法并不依赖它所发布的服务，不管服务是否准备好，是否启动，NSNetService的publish都可以成功将服务发布出去，只不过服务发布出去后其它使用这个服务的客户端会发现这个发布出来的服务是个无效服务。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2016/07/11/[IOS 防止Crash 组件WTSafeGuard ](https---github.com-hongruqi-SafeGuard)/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1315,6 +1359,17 @@
           
 
           
+          
+             <span id="/2016/07/11/[IOS 防止Crash 组件WTSafeGuard ](https---github.com-hongruqi-SafeGuard)/" class="leancloud_visitors" data-flag-title="iOS 降低线上版本Crash率">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
           
 
           
@@ -1484,6 +1539,17 @@
           
 
           
+          
+             <span id="/2015/12/01/IOS 音频开发/" class="leancloud_visitors" data-flag-title="iOS 音频开发">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
           
 
           
@@ -1824,6 +1890,113 @@
 
 
   
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("eb1yBD0EyaLq44S715qVGI48-gzGzoHsz", "VnEiVK5rguyNCK1jtycmco1B");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
 
   
 
