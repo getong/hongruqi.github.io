@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="hongru">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Water的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="UIWindow 整理##UIWindow概念UIWindw定义了一个负责管理，协调一个App的View是如何显示在设备屏幕上的窗口类，除非一个App可以显示在一个外部的设备屏幕上，那么一个App只拥有一个窗口。UIWindow本身没有标题栏，关闭操作栏等任何的装饰物，用户不会看见，移动或者是关闭它，这跟Mac OS上的window有很大的差别。      UIWindow的两大主要功能是提供了一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UIWindow 整理">
+<meta property="og:url" content="https://hongruqi.github.io/2016/07/21/UIWindow 整理/index.html">
+<meta property="og:site_name" content="Water的博客">
+<meta property="og:description" content="UIWindow 整理##UIWindow概念UIWindw定义了一个负责管理，协调一个App的View是如何显示在设备屏幕上的窗口类，除非一个App可以显示在一个外部的设备屏幕上，那么一个App只拥有一个窗口。UIWindow本身没有标题栏，关闭操作栏等任何的装饰物，用户不会看见，移动或者是关闭它，这跟Mac OS上的window有很大的差别。      UIWindow的两大主要功能是提供了一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/901318-74734c584f6565e3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-22T07:52:20.929Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="UIWindow 整理">
+<meta name="twitter:description" content="UIWindow 整理##UIWindow概念UIWindw定义了一个负责管理，协调一个App的View是如何显示在设备屏幕上的窗口类，除非一个App可以显示在一个外部的设备屏幕上，那么一个App只拥有一个窗口。UIWindow本身没有标题栏，关闭操作栏等任何的装饰物，用户不会看见，移动或者是关闭它，这跟Mac OS上的window有很大的差别。      UIWindow的两大主要功能是提供了一">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/901318-74734c584f6565e3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hongruqi.github.io/2016/07/21/UIWindow 整理/">
+
+
+
+
+
+  <title>UIWindow 整理 | Water的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Water的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">2019，行者无疆</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2016/07/21/UIWindow 整理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Water的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">UIWindow 整理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-21T00:00:00+08:00">
+                2016-07-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="UIWindow-整理"><a href="#UIWindow-整理" class="headerlink" title="UIWindow 整理"></a>UIWindow 整理</h1><p>##<strong>UIWindow概念</strong><br>UIWindw定义了一个负责管理，协调一个App的View是如何显示在设备屏幕上的窗口类，除非一个App可以显示在一个外部的设备屏幕上，那么一个App只拥有一个窗口。UIWindow本身没有标题栏，关闭操作栏等任何的装饰物，用户不会看见，移动或者是关闭它，这跟Mac OS上的window有很大的差别。      UIWindow的两大主要功能是提供了一块给View的显示区域，并且负责分发各种事件给View，比如传递触摸事件给各项View或者其它对象。而改变App的显示内容，可以改变UIWindow的rootView，而不需要去创建一个新的UIWindow。同时，它还负责与ViewController协同去处理设备旋转时的情况。      讲到Window还必须要提的两个概念是UIWindowLevel以及KeyWindow。UIWindowLevel是一个CGFloat值，现在UIKit定义了三种Level:<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UIKIT_EXTERN</span> <span class="keyword">const</span> <span class="built_in">UIWindowLevel</span> <span class="built_in">UIWindowLevelNormal</span>; </span><br><span class="line"><span class="built_in">UIKIT_EXTERN</span> <span class="keyword">const</span> <span class="built_in">UIWindowLevel</span> <span class="built_in">UIWindowLevelAlert</span>;</span><br><span class="line"><span class="built_in">UIKIT_EXTERN</span> <span class="keyword">const</span> <span class="built_in">UIWindowLevel</span> <span class="built_in">UIWindowLevelStatusBar</span></span><br></pre></td></tr></table></figure></p>
+<p>UIWindowLevel为2D的iOS世界引入了Z轴的概念，它相当于以屏幕为原地，以使用者为正方向的一根轴。值越小代表离使用者越远，越大代表越靠近使用者。高Level的Window会盖住低Level的window，若是两者Level一样则根据添加顺序来决定，这类似于我们添加子View(UIWindow本来也就是UIView的子类)。而上面三个值分别是0.0,2000.0,1000.0，而大部分在App上使用的都是UIWindowLevelNormal，这也是每个Window被创建出来时的默认值。    我们在创建一个新的window的时候，要让它显示出来必须要调用makeKeyAndVisible方法，让window显示出来，并让它成为一个KeyWindow。KeyWindow是UIApplication的一个开放属性，它是当前App的主window，用来接收键盘输入以及非触摸事件(触摸事件是传递给触摸事件发生的window，不一定是keyWindow)，或者是跟坐标值无关的事件都会被传递给keyWindow。并且在同一时刻，只有一个window会成为keyWindow。但是需要注意一件事情，成为keywindow与windowLevel无关，并不是windowLevel最高的window会成为keywindow.</p>
+<p>##<strong>UIWindow在App启动时扮演的角色</strong><br><strong>(1)The Main Function</strong><br>  所有以C语言为基础的程序的入口都是main函数，iOS App也不例外。以下程序就是iOS App的main函数：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;UIKit/UIKit.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"AppDelegate.h"</span> </span></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">char</span> * argv[])&#123; </span><br><span class="line">      <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">               <span class="keyword">return</span> <span class="built_in">UIApplicationMain</span>(argc, argv, <span class="literal">nil</span>, <span class="built_in">NSStringFromClass</span>([AppDelegate <span class="keyword">class</span>])); </span><br><span class="line">       &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>唯一不同的是你不用去写main函数，这是Xcode自动创建的。这段代码也很简单，它唯一做的工作就是把控制权移交给UIKit framework，根据第三个参数principalClassName创建一个UIApplication对象，根据第四个参数创建一个AppDelegate对象。 </p>
+<p><strong>(2)UIApplication</strong><br>     UIApplication是一个App的核心，它主要的职能是负责方便系统和App的交互，管理Event Loop进行各项事件的处理，以及向自己的Delegate，即AppDelegate进行一些关键事件的传递。一个App只有一个UIApplication单例对象，可以通过[UIApplication sharedApplication]来获得单例。它还能做一些应用级别的事，比如设置桌面上App图标右上角的红点数字，或者是使用openURL直接拨电话，发短信等。在此不做延伸。<br><img src="http://upload-images.jianshu.io/upload_images/901318-74734c584f6565e3.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="图1.jpeg"></p>
+<p><strong> (3)UIWindow</strong></p>
+<p>UIWindow是iOS启动之后，被创建的第一个视图控件。它有可能是通过Interface Builder被创建出来的，也有可能是我们在AppDelegate中自定义创建出来的。当它被创建，添加了rootView之后，一个App的界面最终被展示在用户面前。而如果是自定义创建window时，我们通常会使用window.rootViewController来为它添加rootView，值得注意的是，这句代码仅仅是给UIWindow添加了rootViewController的view，或者说这是一种更加便利的方式来为UIWindow添加rootView,而这个rootViewController属性并不是用来让controller与UIWindow之间进行通信的。除此之外，UIWindow还负责与UIApplication一起负责传递Event给View以及ViewController。</p>
+<p>##拾遗<br><strong>(1)UITextEffectsWindow</strong><br> 这是iOS8引入的一个新window，是键盘所在的window。它的windowLevel是10，高于UIWindowLevelNormal。<br><strong>(2)UIRemoteKeyboardWindow</strong><br>iOS9之后,新增了一个类型为 UIRemoteKeyboardWindow 的窗口用来显示键盘按钮。目前对这个研究还不是很多，以后有了新发现再与大家分享。    </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/20/iOS 性能提升总结/" rel="next" title="iOS 性能提升总结">
+                <i class="fa fa-chevron-left"></i> iOS 性能提升总结
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/22/iOS 手势详解/" rel="prev" title="iOS 手势详解">
+                iOS 手势详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="water">
+          <p class="site-author-name" itemprop="name">water</p>
+           
+              <p class="site-description motion-element" itemprop="description">不积跬步，无以致千里；不积小流，无以成江海。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#UIWindow-整理"><span class="nav-number">1.</span> <span class="nav-text">UIWindow 整理</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">water</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

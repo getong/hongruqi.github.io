@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="hongru">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Water的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="#iOS 降低线上版本Crash率  IOS 防止Crash 组件WTSafeGuard ##背景由于Object-C本身的不安全性，导致很容易产生Crash。在这些Crash，很多我们可以利用自定义手段，进行避免。这样可以降低线上版本的Crash率，提升用户体验。WTSafeGuard 避免APP Crash 组件，目前能做到的还很有限。 UIKit Called on Non-Main Thr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 降低线上版本Crash率">
+<meta property="og:url" content="https://hongruqi.github.io/2016/07/11/[IOS 防止Crash 组件WTSafeGuard ](https---github.com-hongruqi-SafeGuard)/index.html">
+<meta property="og:site_name" content="Water的博客">
+<meta property="og:description" content="#iOS 降低线上版本Crash率  IOS 防止Crash 组件WTSafeGuard ##背景由于Object-C本身的不安全性，导致很容易产生Crash。在这些Crash，很多我们可以利用自定义手段，进行避免。这样可以降低线上版本的Crash率，提升用户体验。WTSafeGuard 避免APP Crash 组件，目前能做到的还很有限。 UIKit Called on Non-Main Thr">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-22T07:58:32.890Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 降低线上版本Crash率">
+<meta name="twitter:description" content="#iOS 降低线上版本Crash率  IOS 防止Crash 组件WTSafeGuard ##背景由于Object-C本身的不安全性，导致很容易产生Crash。在这些Crash，很多我们可以利用自定义手段，进行避免。这样可以降低线上版本的Crash率，提升用户体验。WTSafeGuard 避免APP Crash 组件，目前能做到的还很有限。 UIKit Called on Non-Main Thr">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hongruqi.github.io/2016/07/11/[IOS 防止Crash 组件WTSafeGuard ](https---github.com-hongruqi-SafeGuard)/">
+
+
+
+
+
+  <title>iOS 降低线上版本Crash率 | Water的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Water的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">2019，行者无疆</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2016/07/11/[IOS 防止Crash 组件WTSafeGuard ](https---github.com-hongruqi-SafeGuard)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Water的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 降低线上版本Crash率</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-07-11T00:00:00+08:00">
+                2016-07-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>#iOS 降低线上版本Crash率 </p>
+<h3 id="IOS-防止Crash-组件WTSafeGuard"><a href="#IOS-防止Crash-组件WTSafeGuard" class="headerlink" title="IOS 防止Crash 组件WTSafeGuard "></a><a href="https://github.com/hongruqi/SafeGuard" target="_blank" rel="noopener">IOS 防止Crash 组件WTSafeGuard </a></h3><p>##背景<br>由于Object-C本身的不安全性，导致很容易产生Crash。在这些Crash，很多我们可以利用自定义手段，进行避免。这样可以降低线上版本的Crash率，提升用户<br>体验。WTSafeGuard 避免APP Crash 组件，目前能做到的还很有限。</p>
+<h3 id="UIKit-Called-on-Non-Main-Thread"><a href="#UIKit-Called-on-Non-Main-Thread" class="headerlink" title="UIKit Called on Non-Main Thread"></a>UIKit Called on Non-Main Thread</h3><p>UIKit不是线程安全的，执行UIKit操作如果不在主线程很可能造成程序Crash。所以我们对Hook，UIView 的setNeedsLayout，layoutIfNeeded，layoutSubviews，setNeedsUpdateConstraints方法。如果执行以上函数没有在主队列，通过强行将执行代码，在主队列执行。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)wt_safe_setNeedsLayout</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(![<span class="built_in">NSThread</span> isMainThread])&#123;</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            <span class="built_in">NSAssert</span>(<span class="literal">false</span>, <span class="string">@"wt_safe_setNeedsLayout failed"</span>);</span><br><span class="line">            [<span class="keyword">self</span> wt_safe_setNeedsLayout];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        [<span class="keyword">self</span> wt_safe_setNeedsLayout];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)wt_safe_layoutIfNeeded</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(![<span class="built_in">NSThread</span> isMainThread])&#123;</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            <span class="built_in">NSAssert</span>(<span class="literal">false</span>, <span class="string">@"wt_safe_layoutIfNeeded failed"</span>);</span><br><span class="line">            [<span class="keyword">self</span> wt_safe_layoutIfNeeded];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        [<span class="keyword">self</span> wt_safe_layoutIfNeeded];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)wt_safe_layoutSubviews</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(![<span class="built_in">NSThread</span> isMainThread])&#123;</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            <span class="built_in">NSAssert</span>(<span class="literal">false</span>, <span class="string">@"wt_safe_layoutSubviews failed"</span>);</span><br><span class="line">            [<span class="keyword">self</span> wt_safe_layoutSubviews];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        [<span class="keyword">self</span> wt_safe_layoutSubviews];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)wt_safe_setNeedsUpdateConstraints</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(![<span class="built_in">NSThread</span> isMainThread])&#123;</span><br><span class="line">        <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">            <span class="built_in">NSAssert</span>(<span class="literal">false</span>, <span class="string">@"wt_safe_setNeedsUpdateConstraints failed"</span>);</span><br><span class="line">            [<span class="keyword">self</span> wt_safe_setNeedsUpdateConstraints];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        [<span class="keyword">self</span> wt_safe_setNeedsUpdateConstraints];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>##避免 Foundation 类Carsh</p>
+<p>###NSString<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="keyword">instancetype</span>)stringWithUTF8String:(<span class="keyword">const</span> <span class="keyword">char</span> *)bytes</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithString:(<span class="built_in">NSString</span> *)aString</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithUTF8String:(<span class="keyword">const</span> <span class="keyword">char</span> *)nullTerminatedCString</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithFormat:(<span class="built_in">NSString</span> *)format locale:(<span class="keyword">id</span>)locale arguments:(va_list)argList</span><br><span class="line">- (<span class="built_in">NSString</span> *)stringByAppendingString:(<span class="built_in">NSString</span> *)aString</span><br><span class="line">- (<span class="keyword">unichar</span>)characterAtIndex:(<span class="built_in">NSUInteger</span>)index</span><br><span class="line">- (<span class="keyword">void</span>)getCharacters:(<span class="keyword">unichar</span> *)buffer range:(<span class="built_in">NSRange</span>)range</span><br><span class="line">- (<span class="built_in">NSRange</span>)rangeOfCharacterFromSet:(<span class="built_in">NSCharacterSet</span>  *)searchSet </span><br><span class="line">                            options:(<span class="built_in">NSStringCompareOptions</span>)mask</span><br><span class="line">                              range:(<span class="built_in">NSRange</span>)searchRange</span><br><span class="line">                                    </span><br><span class="line">- (<span class="built_in">NSRange</span>)rangeOfString:(<span class="built_in">NSString</span> *)searchString</span><br><span class="line">                options:(<span class="built_in">NSStringCompareOptions</span>)mask</span><br><span class="line">                  range:(<span class="built_in">NSRange</span>)searchRange</span><br><span class="line">                 locale:(<span class="built_in">NSLocale</span> *)locale</span><br><span class="line">- (<span class="built_in">NSString</span> *)substringFromIndex:(<span class="built_in">NSUInteger</span>)from</span><br><span class="line">- (<span class="built_in">NSString</span> *)substringWithRange:(<span class="built_in">NSRange</span>)range</span><br><span class="line">- (<span class="built_in">NSString</span> *)substringToIndex:(<span class="built_in">NSUInteger</span>)to</span><br><span class="line">- (<span class="keyword">void</span>)getLineStart:(<span class="built_in">NSUInteger</span> *)startPtr   </span><br><span class="line">                 end:(<span class="built_in">NSUInteger</span> *)lineEndPtr                                         </span><br><span class="line">                 contentsEnd:(<span class="built_in">NSUInteger</span> *)contentsEndPtr</span><br><span class="line">                   forRange:(<span class="built_in">NSRange</span>)range</span><br></pre></td></tr></table></figure></p>
+<h3 id="NSAttributedString"><a href="#NSAttributedString" class="headerlink" title="NSAttributedString"></a>NSAttributedString</h3><p>hook 方法：对传入参数range 进行check，如果range有问题，直接返回nil</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">NSAttributedString</span> *)attributedSubstringFromRange:(<span class="built_in">NSRange</span>)range;</span><br></pre></td></tr></table></figure>
+<h3 id="NSFileManager"><a href="#NSFileManager" class="headerlink" title="NSFileManager"></a>NSFileManager</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">nullable</span> <span class="built_in">NSDirectoryEnumerator</span>&lt;<span class="built_in">NSURL</span> *&gt; *)enumeratorAtURL:(<span class="built_in">NSURL</span> *)url includingPropertiesForKeys:(<span class="keyword">nullable</span> <span class="built_in">NSArray</span>&lt;<span class="built_in">NSURLResourceKey</span>&gt; *)keys options:(<span class="built_in">NSDirectoryEnumerationOptions</span>)mask errorHandler:(<span class="keyword">nullable</span> <span class="built_in">BOOL</span> (^)(<span class="built_in">NSURL</span> *url, <span class="built_in">NSError</span> *error))handler</span><br></pre></td></tr></table></figure>
+<p>###NSIndexPath<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)getIndexes:(<span class="built_in">NSUInteger</span> *)indexes range:(<span class="built_in">NSRange</span>)positionRang</span><br></pre></td></tr></table></figure></p>
+<p>###NSJSONSerialization<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">NSData</span> *)dataWithJSONObject:(<span class="keyword">id</span>)obj options:(<span class="built_in">NSJSONWritingOptions</span>)opt error:(<span class="built_in">NSError</span> **)error</span><br></pre></td></tr></table></figure></p>
+<h3 id="NSDictionary"><a href="#NSDictionary" class="headerlink" title="NSDictionary"></a>NSDictionary</h3><p>hook 方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="keyword">id</span>)sharedKeySetForKeys:(<span class="built_in">NSArray</span>&lt;KeyType &lt;<span class="built_in">NSCopying</span>&gt;&gt; *)keys</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithObjects:(<span class="keyword">const</span> ObjectType _Nonnull [_Nullable])objects forKeys:(<span class="keyword">const</span> KeyType &lt;<span class="built_in">NSCopying</span>&gt; _Nonnull [_Nullable])keys</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithObjects:(<span class="keyword">const</span> ObjectType _Nonnull [_Nullable])objects forKeys:(<span class="keyword">const</span> KeyType &lt;<span class="built_in">NSCopying</span>&gt; _Nonnull [_Nullable])keys count:(<span class="built_in">NSUInteger</span>)cnt</span><br></pre></td></tr></table></figure>
+<h3 id="NSMutableDictionary"><a href="#NSMutableDictionary" class="headerlink" title="NSMutableDictionary"></a>NSMutableDictionary</h3><p>hook 方法：</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">NSMutableDictionary</span>&lt;KeyType, ObjectType&gt; *)dictionaryWithSharedKeySet:(<span class="keyword">id</span>)keyset</span><br><span class="line">- (<span class="keyword">void</span>)setObject:(ObjectType)anObject forKey:(KeyType &lt;<span class="built_in">NSCopying</span>&gt;)aKey;</span><br><span class="line">- (<span class="keyword">void</span>)removeObjectForKey:(KeyType)aKey;</span><br></pre></td></tr></table></figure>
+<p>###NSSet<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">instancetype</span>)WT_initWithObjects:(<span class="keyword">const</span> <span class="keyword">id</span> [])objects count:(<span class="built_in">NSUInteger</span>)cnt</span><br><span class="line">- (<span class="keyword">void</span>)addObject:(<span class="keyword">id</span>)object;</span><br><span class="line">- (<span class="keyword">void</span>)makeObjectsPerformSelector:(SEL)aSelector</span><br><span class="line">- (<span class="keyword">void</span>)makeObjectsPerformSelector:(SEL)aSelector</span><br><span class="line">                        withObject:(<span class="keyword">id</span>)argument</span><br></pre></td></tr></table></figure></p>
+<p>###NSMutableSet<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)addObject:(<span class="keyword">id</span>)anObject</span><br></pre></td></tr></table></figure></p>
+<p>###NSMutableString<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)setString:(<span class="built_in">NSString</span> *)aString</span><br><span class="line">- (<span class="keyword">void</span>)appendString:(<span class="built_in">NSString</span> *)aString</span><br><span class="line">- (<span class="keyword">void</span>)deleteCharactersInRange:(<span class="built_in">NSRange</span>)range</span><br><span class="line">- (<span class="keyword">void</span>)insertString:(<span class="built_in">NSString</span> *)aString atIndex:(<span class="built_in">NSUInteger</span>)loc</span><br><span class="line">- (<span class="keyword">void</span>)replaceCharactersInRange:(<span class="built_in">NSRange</span>)range withString:(<span class="built_in">NSString</span> *)aString</span><br><span class="line">-  (<span class="built_in">NSUInteger</span>)replaceOccurrencesOfString:(<span class="built_in">NSString</span> *)target</span><br><span class="line">                                     withString:(<span class="built_in">NSString</span> *)replacement</span><br><span class="line">                                        options:(<span class="built_in">NSStringCompareOptions</span>)options</span><br><span class="line">                                          range:(<span class="built_in">NSRange</span>)searchRange</span><br></pre></td></tr></table></figure></p>
+<p>###NSURL<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="built_in">NSURL</span> *)fileURLWithPath:(<span class="built_in">NSString</span> *)path</span><br><span class="line">+ (<span class="built_in">NSURL</span> *)fileURLWithPath:(<span class="built_in">NSString</span> *)path isDirectory:(<span class="built_in">BOOL</span>)isDir</span><br><span class="line">+ (<span class="built_in">NSURL</span> *)fileURLWithPathComponents:(<span class="built_in">NSArray</span>&lt;<span class="built_in">NSString</span> *&gt; *)components</span><br><span class="line">+ (<span class="built_in">NSURL</span> *)fileURLWithPath:(<span class="built_in">NSString</span> *)path</span><br><span class="line">                      isDirectory:(<span class="built_in">BOOL</span>)isDir</span><br><span class="line">                    relativeToURL:(<span class="built_in">NSURL</span> *)baseURL</span><br><span class="line">- (<span class="keyword">instancetype</span>)initWithString:(<span class="built_in">NSString</span> *)URLString relativeToURL:(<span class="built_in">NSURL</span> *)baseURL</span><br><span class="line">- (<span class="keyword">instancetype</span>)initFileURLWithPath:(<span class="built_in">NSString</span> *)path</span><br><span class="line">- (<span class="keyword">instancetype</span>)initFileURLWithPath:(<span class="built_in">NSString</span> *)path</span><br><span class="line">                             relativeToURL:(<span class="built_in">NSURL</span> *)baseURL</span><br><span class="line">- (<span class="keyword">instancetype</span>)initFileURLWithPath:(<span class="built_in">NSString</span> *)path</span><br><span class="line">                               isDirectory:(<span class="built_in">BOOL</span>)isDir</span><br><span class="line">                             relativeToURL:(<span class="built_in">NSURL</span> *)baseURL</span><br></pre></td></tr></table></figure></p>
+<ol start="2">
+<li>KVO</li>
+<li>容器越界（NSArray， NSDictionary,…）</li>
+<li>unrecognized selector crash (这个很多时候是由于class使用错误导致)</li>
+<li>NSTimer 导致crash</li>
+</ol>
+<hr>
+<h3 id="KVO-Crash"><a href="#KVO-Crash" class="headerlink" title="KVO Crash"></a>KVO Crash</h3><p>项目中KVO crash 占比很高， 主要原因为，添加删除不对称导致。<br>解决方法为，添加Map进行缓存。<br>不过这个方案，目前还有缺陷。</p>
+<h3 id="unrecognized-selector-crash"><a href="#unrecognized-selector-crash" class="headerlink" title="unrecognized selector crash"></a>unrecognized selector crash</h3><p>这个就比较简单了，直接上代码：<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">    [<span class="built_in">NSObject</span> jr_swizzleMethod:<span class="keyword">@selector</span>(forwardingTargetForSelector:) withMethod:<span class="keyword">@selector</span>(WT_safeForwardingTargetForSelector:) error:&amp;error];</span><br><span class="line">    </span><br><span class="line">    - (<span class="keyword">id</span>)WT_safeForwardingTargetForSelector:(SEL)aSelector</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSMethodSignature</span> *signature = [<span class="keyword">self</span> methodSignatureForSelector:aSelector];</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span> respondsToSelector:aSelector] || signature) &#123;</span><br><span class="line">        <span class="keyword">return</span> [<span class="keyword">self</span> WT_safeForwardingTargetForSelector:aSelector];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> [WTSafeGuard createFakeForwardTargetObject:<span class="keyword">self</span> selector:aSelector];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/12/01/IOS 音频开发/" rel="next" title="iOS 音频开发">
+                <i class="fa fa-chevron-left"></i> iOS 音频开发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/16/iOS 适配 & 开发策略/" rel="prev" title="iOS 适配 & 开发策略">
+                iOS 适配 & 开发策略 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="water">
+          <p class="site-author-name" itemprop="name">water</p>
+           
+              <p class="site-description motion-element" itemprop="description">不积跬步，无以致千里；不积小流，无以成江海。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#IOS-防止Crash-组件WTSafeGuard"><span class="nav-number">1.</span> <span class="nav-text">IOS 防止Crash 组件WTSafeGuard </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UIKit-Called-on-Non-Main-Thread"><span class="nav-number">2.</span> <span class="nav-text">UIKit Called on Non-Main Thread</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSAttributedString"><span class="nav-number">3.</span> <span class="nav-text">NSAttributedString</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSFileManager"><span class="nav-number">4.</span> <span class="nav-text">NSFileManager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSDictionary"><span class="nav-number">5.</span> <span class="nav-text">NSDictionary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NSMutableDictionary"><span class="nav-number">6.</span> <span class="nav-text">NSMutableDictionary</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KVO-Crash"><span class="nav-number">7.</span> <span class="nav-text">KVO Crash</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unrecognized-selector-crash"><span class="nav-number">8.</span> <span class="nav-text">unrecognized selector crash</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">water</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

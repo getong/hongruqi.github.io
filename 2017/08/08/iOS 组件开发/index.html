@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="hongru">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Water的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="iOS 组件开发####WTModule组件间通信 ##背景 关于组件化开发，经历过几家不同公司，正好处于不同的开发阶段。第一家港股上市公司，移动端业务线很多，主要是即时通讯功能，类似与微博的社区功能，企业ERP功能，视频教育功能，开始各条业务线独立，相互调用只能通过彼此提供静态库或者framework进行，每次升级都需要重新集成，比较麻烦，问题也很多，问题反馈解决时间也很漫长。之后公司后台业务重">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 组件开发">
+<meta property="og:url" content="https://hongruqi.github.io/2017/08/08/iOS 组件开发/index.html">
+<meta property="og:site_name" content="Water的博客">
+<meta property="og:description" content="iOS 组件开发####WTModule组件间通信 ##背景 关于组件化开发，经历过几家不同公司，正好处于不同的开发阶段。第一家港股上市公司，移动端业务线很多，主要是即时通讯功能，类似与微博的社区功能，企业ERP功能，视频教育功能，开始各条业务线独立，相互调用只能通过彼此提供静态库或者framework进行，每次升级都需要重新集成，比较麻烦，问题也很多，问题反馈解决时间也很漫长。之后公司后台业务重">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/901318-be6b6895fec095e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/901318-07fec64bc877746a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-22T08:02:32.585Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 组件开发">
+<meta name="twitter:description" content="iOS 组件开发####WTModule组件间通信 ##背景 关于组件化开发，经历过几家不同公司，正好处于不同的开发阶段。第一家港股上市公司，移动端业务线很多，主要是即时通讯功能，类似与微博的社区功能，企业ERP功能，视频教育功能，开始各条业务线独立，相互调用只能通过彼此提供静态库或者framework进行，每次升级都需要重新集成，比较麻烦，问题也很多，问题反馈解决时间也很漫长。之后公司后台业务重">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/901318-be6b6895fec095e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hongruqi.github.io/2017/08/08/iOS 组件开发/">
+
+
+
+
+
+  <title>iOS 组件开发 | Water的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Water的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">2019，行者无疆</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2017/08/08/iOS 组件开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Water的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 组件开发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-08T00:00:00+08:00">
+                2017-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="iOS-组件开发"><a href="#iOS-组件开发" class="headerlink" title="iOS 组件开发"></a>iOS 组件开发</h1><p>####<a href="https://github.com/hongruqi/WTModule" target="_blank" rel="noopener">WTModule组件间通信</a></p>
+<p>##背景<br> 关于组件化开发，经历过几家不同公司，正好处于不同的开发阶段。<br>第一家港股上市公司，移动端业务线很多，主要是即时通讯功能，类似与微博的社区功能，企业ERP功能，视频教育功能，开始各条业务线独立，相互调用只能通过彼此提供静态库或者framework进行，每次升级都需要重新集成，比较麻烦，问题也很多，问题反馈解决时间也很漫长。之后公司后台业务重构，移动端随之进行组件化开发，经历了整个过程。<br>第二家公司，国内知名互联企业，进入开发组时，已经完成组件化工作，各个业务人员在自己的业务线上进行开发，每条业务线独立提测，在这样的业务线上工作，可以更专一的完成个人负责的业务，效率更高。<br>目前所在公司，没有进行组件化，业务耦合严重，全局变量使用频繁，经常会因为A业务被修改，导致B业务产生bug。现阶段开始进行组件化。</p>
+<p>##个人思考： 什么时候做组件开发</p>
+<ul>
+<li>项目管理：项目的业务线超过2条以上，需要独立拆分。随着业务的拆分，对应的业务组件也就很自然的独立出来。</li>
+<li>人员管理：随着人员的增加，过多人对同一块代码的进行修改，导致bug的可能性上升，这时候需要对人员和其维护的功能需要进行重新分配。</li>
+<li>测试维度：随着项目的业务量增大，不做组件化，就很难做单元测试。每个小功能修改，测试都需要对App进行测试，严重增加测试工作量。</li>
+<li>综上：当你的App业务之间交叉耦合，bug率难以下降，测试每天做大量重复工作。开发人员之间修改相互影响时，你需要考虑进行组件化。</li>
+</ul>
+<h2 id="如何做组件开"><a href="#如何做组件开" class="headerlink" title="如何做组件开"></a>如何做组件开</h2><h2 id="组件划分"><a href="#组件划分" class="headerlink" title="组件划分"></a>组件划分</h2><p><img src="http://upload-images.jianshu.io/upload_images/901318-be6b6895fec095e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="架构图.png"></p>
+<blockquote>
+<p>按照架构图，我们将App分为壳工程 + 业务 + 公共组件</p>
+</blockquote>
+<ol>
+<li>壳工程：主要包含</li>
+</ol>
+<ul>
+<li>main</li>
+<li>XXAppDelegate</li>
+<li>工程配置</li>
+<li>Debug页面</li>
+</ul>
+<ol start="2">
+<li>业务组件：<blockquote>
+<p>业务组件之间不相互依赖，只可以依赖公共业务组件和公共组件， 业务之间的调用通过统一的组件进行。</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>具体业务组件：根据项目自身业务进行拆分</li>
+<li>基础业务组件：User组件</li>
+</ul>
+<ol start="3">
+<li>公共组件：可以被业务组件依赖</li>
+</ol>
+<hr>
+<p> 以下为我们目前的划分：</p>
+<p>###公共组件：</p>
+<ul>
+<li>埋点组件</li>
+<li>Common组件（聚合工具类）</li>
+<li>启动组件</li>
+<li>性能监控组件</li>
+<li>定位组件</li>
+<li>图片处理组件</li>
+<li>UIKit封装和扩展组件</li>
+<li>业务生命周期及通信组件<br>###网络组件：</li>
+<li>基础网络组件 基于AFNetworking进行封装，提供JSON转Model，和缓存功能</li>
+<li>DNS 加速组件<br>###持久化组件</li>
+<li>基于FMDB进行封装组件<br>###第三方业务组件，在第三方SDK基础上进行适配</li>
+<li>分享组件</li>
+<li>推送组件<br>###基础业务组件</li>
+<li>User组件，保存用户信息，登陆，登出状态</li>
+</ul>
+<p>##如何做组件</p>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
+<li>Git</li>
+<li>CocoaPods<h3 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h3>通过Pods 进划分好的组件，进行私有Pod化。可以参考这篇文档<br><a href="http://www.jianshu.com/p/80eeb5bc8834" target="_blank" rel="noopener">发布私有CocoaPod Spec</a></li>
+</ul>
+<h2 id="组件的构造和通信"><a href="#组件的构造和通信" class="headerlink" title="组件的构造和通信"></a>组件的构造和通信</h2><p>###组件生命周期管理</p>
+<ul>
+<li>组件的生命周期，与App的生命周期应该保持一致。<br><img src="http://upload-images.jianshu.io/upload_images/901318-07fec64bc877746a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="组件生命周期.png"></li>
+</ul>
+<h4 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h4><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#WTAppDelegate.h</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">WTAppDelegate</span> : <span class="title">UIResponder</span>&lt;<span class="title">UIApplicationDelegate</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">strong</span>, <span class="keyword">nonatomic</span>) <span class="built_in">UIWindow</span> *window;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"><span class="meta">#WTAppDelegate.m</span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"WTAppDelegate.h"</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"WTModuleLifecycle+AppDelegate.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">WTAppDelegate</span></span></span><br><span class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application didFinishLaunchingWithOptions:(<span class="built_in">NSDictionary</span> *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> [[WTModuleLifecycle instance] application:application</span><br><span class="line">                                 didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didRegisterUserNotificationSettings:(<span class="built_in">UIUserNotificationSettings</span> *)notificationSettings</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//注册远程通知</span></span><br><span class="line">    [application registerForRemoteNotifications];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didRegisterForRemoteNotificationsWithDeviceToken:(<span class="built_in">NSData</span> *)deviceToken</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] application:application</span><br><span class="line">       didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didFailToRegisterForRemoteNotificationsWithError:(<span class="built_in">NSError</span> *)error</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] application:application</span><br><span class="line">       didFailToRegisterForRemoteNotificationsWithError:error];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didReceiveRemoteNotification:(<span class="built_in">NSDictionary</span> *)userInfo</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] application:application</span><br><span class="line">                           didReceiveRemoteNotification:userInfo];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application didReceiveLocalNotification:(<span class="built_in">UILocalNotification</span> *)notification</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] application:application</span><br><span class="line">                            didReceiveLocalNotification:notification];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application continueUserActivity:(<span class="built_in">NSUserActivity</span> *)userActivity restorationHandler:(<span class="keyword">void</span> (^)(<span class="built_in">NSArray</span> * _Nullable))restorationHandler</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> [[WTModuleLifecycle instance] application:application</span><br><span class="line">                                          continueUserActivity:userActivity</span><br><span class="line">                                            restorationHandler:restorationHandler];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)applicationDidEnterBackground:(<span class="built_in">UIApplication</span> *)application</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] applicationDidEnterBackground:application];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)applicationDidBecomeActive:(<span class="built_in">UIApplication</span> *)application</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] applicationDidBecomeActive:application];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)applicationWillResignActive:(<span class="built_in">UIApplication</span> *)application</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] applicationWillResignActive:application];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)applicationWillTerminate:(<span class="built_in">UIApplication</span> *)application</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] applicationWillTerminate:application];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)applicationDidReceiveMemoryWarning:(<span class="built_in">UIApplication</span> *)application</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] applicationDidReceiveMemoryWarning:application];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)application openURL:(<span class="built_in">NSURL</span> *)url sourceApplication:(<span class="built_in">NSString</span> *)sourceApplication annotation:(<span class="keyword">id</span>)annotation</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> [[WTModuleLifecycle instance] application:application</span><br><span class="line">                                                       openURL:url</span><br><span class="line">                                             sourceApplication:sourceApplication</span><br><span class="line">                                                    annotation:annotation];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">BOOL</span>)application:(<span class="built_in">UIApplication</span> *)app openURL:(<span class="built_in">NSURL</span> *)url options:(<span class="built_in">NSDictionary</span>&lt;<span class="built_in">UIApplicationOpenURLOptionsKey</span>,<span class="keyword">id</span>&gt; *)options</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> [[WTModuleLifecycle instance] application:app openURL:url options:options];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)application:(<span class="built_in">UIApplication</span> *)application performActionForShortcutItem:(<span class="built_in">UIApplicationShortcutItem</span> *)shortcutItem completionHandler:(<span class="keyword">void</span>(^)(<span class="built_in">BOOL</span> succeeded))completionHandler</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] application:application</span><br><span class="line">                           performActionForShortcutItem:shortcutItem</span><br><span class="line">                                      completionHandler:completionHandler];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)applicationWillEnterForeground:(<span class="built_in">UIApplication</span> *)application</span><br><span class="line">&#123;</span><br><span class="line">    [[WTModuleLifecycle instance] applicationWillEnterForeground:application];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>###组件间通信</p>
+<blockquote>
+<p>现状：目前非常流行的方式为，蘑菇街的解决方案，通过路由协议，实现全部App的内页面间跳转。不过我们没有选择这样做。</p>
+</blockquote>
+<ul>
+<li>首先，我们定义件间： 有与App相同的生命周期，可以独立编译，功能独立，对外提供统一接口。</li>
+</ul>
+<blockquote>
+<p>通过上面的定义，我们会发现路由协议不适用于我们对组件的定义。<br>分析：页面路由，打破了件间的独立性，虽然是通过统一的协议进行访问。但是这样就存在一个问题。A组件的一个子界面，可以访问B组件的子界面。这对我们对组件的理解有些矛盾。A组件的子界面需要调用B的子界面，需要通过B组件提供的接口调用。</p>
+</blockquote>
+<p>##我们的实现</p>
+<ol>
+<li>注册组件由WTModuleLifecycle最为媒介持有组件</li>
+<li>通过统一API调用，实现组件间通信</li>
+</ol>
+<p>###代码<br><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">"WTModuleMessager.h"</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;objc/message.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"WTModuleLifecycle.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">WTModuleMessager</span>()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSMutableArray</span> *services;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">WTModuleMessager</span></span></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">instancetype</span>)instance</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> oncePredicate;</span><br><span class="line">    <span class="keyword">static</span> WTModuleMessager *instance;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;oncePredicate, ^&#123;</span><br><span class="line">        instance = [[<span class="keyword">self</span> alloc] init];</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">instancetype</span>)init</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span> = [<span class="keyword">super</span> init];</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>) &#123;</span><br><span class="line">        _services = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">self</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">id</span>)performAPI:(<span class="built_in">NSString</span> *)moduleName methodName:(<span class="built_in">NSString</span> *)methodName withParams:(<span class="built_in">NSDictionary</span> *)params</span><br><span class="line">&#123;</span><br><span class="line">    Class targetClass = [WTModuleMessager serviceClassFromString:moduleName];</span><br><span class="line">    SEL targetSelector = [WTModuleMessager selectorFromString:methodName hasCallBack:<span class="literal">NO</span>];</span><br><span class="line">    <span class="keyword">if</span> (![WTModuleMessager validateClass:targetClass selector:targetSelector]) &#123;</span><br><span class="line">        <span class="built_in">NSAssert</span>(targetClass, <span class="string">@"%@ 名称不规范"</span>,moduleName);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//    id targetOpenService = [[targetClass alloc]init];</span></span><br><span class="line">    <span class="keyword">id</span> targetOpenService = [[WTModuleLifecycle instance] moduleInstanceByName:<span class="built_in">NSStringFromClass</span>(targetClass)];</span><br><span class="line">    <span class="keyword">if</span> ([targetOpenService respondsToSelector:targetSelector]) &#123;</span><br><span class="line">        <span class="keyword">return</span> ((<span class="keyword">id</span> (*)(<span class="keyword">id</span>, SEL, <span class="keyword">id</span>))objc_msgSend)(targetOpenService, targetSelector, params);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">NSAssert</span>(targetClass, <span class="string">@"%@ 找不到对应的类方法"</span>,methodName);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">nil</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="built_in">BOOL</span>)performAPI:(<span class="built_in">NSString</span> *)moduleName methodName:(<span class="built_in">NSString</span> *)methodName withParams:(<span class="built_in">NSDictionary</span> *)params block:(WTModuleMessagerCallback)block</span><br><span class="line">&#123;</span><br><span class="line">    Class targetClass = [WTModuleMessager serviceClassFromString:moduleName];</span><br><span class="line">    SEL targetSelector = [WTModuleMessager selectorFromString:methodName hasCallBack:<span class="literal">YES</span>];</span><br><span class="line">    <span class="keyword">if</span> (![WTModuleMessager validateClass:targetClass selector:targetSelector]) &#123;</span><br><span class="line">        <span class="built_in">NSAssert</span>(targetClass, <span class="string">@"%@ 名称不规范"</span>,moduleName);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">id</span> targetOpenService = [[targetClass alloc]init];</span><br><span class="line">    <span class="keyword">if</span> ([targetOpenService respondsToSelector:targetSelector]) &#123;</span><br><span class="line">        [[WTModuleMessager instance].services addObject:targetOpenService];</span><br><span class="line">        <span class="keyword">return</span> ((<span class="built_in">BOOL</span> (*)(<span class="keyword">id</span>, SEL, <span class="keyword">id</span>, WTModuleMessagerCallback))objc_msgSend)(targetOpenService, targetSelector, params,[WTModuleMessager callbackBlock:block openService:targetOpenService]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">NSAssert</span>(targetClass, <span class="string">@"%@ 找不到对应的类方法"</span>,methodName);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NO</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (WTModuleMessagerCallback)callbackBlock:(WTModuleMessagerCallback)callbackBlock openService:(<span class="built_in">NSObject</span> *)openService</span><br><span class="line">&#123;</span><br><span class="line">    WTModuleMessagerCallback block = ^(<span class="built_in">NSError</span> *error, <span class="keyword">id</span> result)&#123;</span><br><span class="line">        [[WTModuleMessager instance].services removeObject:openService];</span><br><span class="line">        callbackBlock(error,result);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> [block <span class="keyword">copy</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="built_in">BOOL</span>)validateClass:(Class)targetClass selector:(SEL)targetSelector</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (targetClass &amp;&amp; targetSelector) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (Class)serviceClassFromString:(<span class="built_in">NSString</span> *)moduleName</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSArray</span> *pathArray = [moduleName componentsSeparatedByString:<span class="string">@"/"</span>];</span><br><span class="line">    <span class="built_in">NSMutableString</span> *serviceClassMS = [[<span class="built_in">NSMutableString</span> alloc] initWithString:<span class="string">@"WT"</span>];</span><br><span class="line">    [serviceClassMS appendString:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@"</span>, [[pathArray.firstObject substringToIndex:<span class="number">1</span>] capitalizedString], [pathArray.firstObject substringFromIndex:<span class="number">1</span>]]];</span><br><span class="line">    [serviceClassMS appendString:<span class="string">@"Module"</span>];</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">NSClassFromString</span>(serviceClassMS);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (SEL)selectorFromString:(<span class="built_in">NSString</span> *)methodName hasCallBack:(<span class="built_in">BOOL</span>)hasCallBack</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSArray</span> *pathArray = [methodName componentsSeparatedByString:<span class="string">@"/"</span>];</span><br><span class="line">    <span class="built_in">NSMutableString</span> *serviceClassMS = [[<span class="built_in">NSMutableString</span> alloc] init];</span><br><span class="line">    [serviceClassMS appendString:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@%@"</span>, [[pathArray.firstObject substringToIndex:<span class="number">1</span>] lowercaseString], [pathArray.firstObject substringFromIndex:<span class="number">1</span>]]];</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSString</span> *selectorString = <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">if</span> (hasCallBack) &#123;</span><br><span class="line">        selectorString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@:block:"</span>,serviceClassMS];</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        selectorString = [<span class="built_in">NSString</span> stringWithFormat:<span class="string">@"%@:"</span>,serviceClassMS];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">NSSelectorFromString</span>(selectorString);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>####<a href="https://github.com/hongruqi/WTModule" target="_blank" rel="noopener">组件化基础代码Github地址</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/19/iOS App 启动优化/" rel="next" title="iOS App 启动优化">
+                <i class="fa fa-chevron-left"></i> iOS App 启动优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/31/WKWebView 特性/" rel="prev" title="WKWebView 使用详解">
+                WKWebView 使用详解 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="water">
+          <p class="site-author-name" itemprop="name">water</p>
+           
+              <p class="site-description motion-element" itemprop="description">不积跬步，无以致千里；不积小流，无以成江海。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-组件开发"><span class="nav-number">1.</span> <span class="nav-text">iOS 组件开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何做组件开"><span class="nav-number">1.1.</span> <span class="nav-text">如何做组件开</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件划分"><span class="nav-number">1.2.</span> <span class="nav-text">组件划分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">1.2.1.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法"><span class="nav-number">1.2.2.</span> <span class="nav-text">方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件的构造和通信"><span class="nav-number">1.3.</span> <span class="nav-text">组件的构造和通信</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#源码"><span class="nav-number">1.3.0.1.</span> <span class="nav-text">源码</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">water</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

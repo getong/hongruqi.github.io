@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="hongru">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Water的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="iOS 应用，性能监控github 源码地址iOS 应用，性能监控 背景，目前正在优化项目，首先要对项目内的性能指标进行分析，这个可以通过Instrument 进行debug 分析。这样做只适用于开发人员。性能指标作为一项衡量App的重要指标无法量化。为了每次发布前能有一个性能报告，需要开发一个组件，对性能数据进行记录，之后通过脚本生成报表。  ##报表中重点关注的指标有以下几点：  启动时间 内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 应用，性能监控">
+<meta property="og:url" content="https://hongruqi.github.io/2017/07/15/iOS 应用，性能监控/index.html">
+<meta property="og:site_name" content="Water的博客">
+<meta property="og:description" content="iOS 应用，性能监控github 源码地址iOS 应用，性能监控 背景，目前正在优化项目，首先要对项目内的性能指标进行分析，这个可以通过Instrument 进行debug 分析。这样做只适用于开发人员。性能指标作为一项衡量App的重要指标无法量化。为了每次发布前能有一个性能报告，需要开发一个组件，对性能数据进行记录，之后通过脚本生成报表。  ##报表中重点关注的指标有以下几点：  启动时间 内">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-22T07:59:56.073Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 应用，性能监控">
+<meta name="twitter:description" content="iOS 应用，性能监控github 源码地址iOS 应用，性能监控 背景，目前正在优化项目，首先要对项目内的性能指标进行分析，这个可以通过Instrument 进行debug 分析。这样做只适用于开发人员。性能指标作为一项衡量App的重要指标无法量化。为了每次发布前能有一个性能报告，需要开发一个组件，对性能数据进行记录，之后通过脚本生成报表。  ##报表中重点关注的指标有以下几点：  启动时间 内">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hongruqi.github.io/2017/07/15/iOS 应用，性能监控/">
+
+
+
+
+
+  <title>iOS 应用，性能监控 | Water的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Water的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">2019，行者无疆</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2017/07/15/iOS 应用，性能监控/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Water的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 应用，性能监控</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-15T00:00:00+08:00">
+                2017-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="iOS-应用，性能监控"><a href="#iOS-应用，性能监控" class="headerlink" title="iOS 应用，性能监控"></a>iOS 应用，性能监控</h1><h2 id="github-源码地址"><a href="#github-源码地址" class="headerlink" title="github 源码地址"></a><a href="https://github.com/hongruqi/Walle.git" target="_blank" rel="noopener">github 源码地址</a></h2><h1 id="iOS-应用，性能监控-1"><a href="#iOS-应用，性能监控-1" class="headerlink" title="iOS 应用，性能监控"></a>iOS 应用，性能监控</h1><blockquote>
+<p>背景，目前正在优化项目，首先要对项目内的性能指标进行分析，这个可以通过Instrument 进行debug 分析。这样做只适用于开发人员。性能指标作为一项衡量App的重要指标无法量化。为了每次发布前能有一个性能报告，需要开发一个组件，对性能数据进行记录，之后通过脚本生成报表。</p>
+</blockquote>
+<p>##报表中重点关注的指标有以下几点：</p>
+<ul>
+<li>启动时间</li>
+<li>内存</li>
+<li>FPS（页面刷新帧率）</li>
+<li>CPU </li>
+<li>页面渲染时间</li>
+</ul>
+<h2 id="debug模式"><a href="#debug模式" class="headerlink" title="debug模式"></a>debug模式</h2><ul>
+<li>主线程阻塞时，输出MainThread 栈信息。</li>
+</ul>
+<p>##分别介绍如何实现这些数据的采集。</p>
+<h3 id="内存"><a href="#内存" class="headerlink" title="内存"></a>内存</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">vm_size_t usedMemory(<span class="keyword">void</span>) &#123;</span><br><span class="line">    <span class="keyword">struct</span> task_basic_info info;</span><br><span class="line">    mach_msg_type_number_t size = <span class="keyword">sizeof</span>(info);</span><br><span class="line">    kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&amp;info, &amp;size);</span><br><span class="line">    <span class="keyword">return</span> (kerr == KERN_SUCCESS) ? info.resident_size : <span class="number">0</span>; <span class="comment">// size in bytes</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="FPS"><a href="#FPS" class="headerlink" title="FPS"></a>FPS</h3><ul>
+<li>使用CADisplayLink 进行获取</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">        _displayLink = [<span class="built_in">CADisplayLink</span> displayLinkWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(envokeDisplayLink:)];</span><br><span class="line">        [_displayLink addToRunLoop:[<span class="built_in">NSRunLoop</span> mainRunLoop] forMode:<span class="built_in">NSRunLoopCommonModes</span>];</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)envokeDisplayLink:(<span class="built_in">CADisplayLink</span> *)displayLink</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (_lastTime == <span class="number">0</span>) &#123;</span><br><span class="line">        _lastTime = displayLink.timestamp;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    _count ++;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSTimeInterval</span> interval = displayLink.timestamp - _lastTime;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (interval &lt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    _lastTime = displayLink.timestamp;</span><br><span class="line">    <span class="built_in">CGFloat</span> fps = _count / interval;</span><br><span class="line">    _count = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSInteger</span> shownFPS = round(fps);</span><br><span class="line">    <span class="built_in">CGFloat</span> memory = [XYPerformanceUtility usedMemoryInMB];</span><br><span class="line">    <span class="built_in">CGFloat</span> cpu = [XYPerformanceUtility cpuUsage];</span><br><span class="line">    DDLogInfo(<span class="string">@"FPS:%ld,MEM:%.2f,CPU:%.2f"</span>, (<span class="keyword">long</span>)shownFPS, memory, cpu);</span><br><span class="line">    </span><br><span class="line">    [<span class="keyword">self</span>.performanceView setPerformanceViewData:cpu memory:memory FPS:shownFPS];</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="CPU"><a href="#CPU" class="headerlink" title="CPU"></a>CPU</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> cpu_usage()</span><br><span class="line">&#123;</span><br><span class="line">    kern_return_t kr;</span><br><span class="line">    task_info_data_t tinfo;</span><br><span class="line">    mach_msg_type_number_t task_info_count;</span><br><span class="line">    </span><br><span class="line">    task_info_count = TASK_INFO_MAX;</span><br><span class="line">    kr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)tinfo, &amp;task_info_count);</span><br><span class="line">    <span class="keyword">if</span> (kr != KERN_SUCCESS) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    task_basic_info_t      basic_info;</span><br><span class="line">    thread_array_t         thread_list;</span><br><span class="line">    mach_msg_type_number_t thread_count;</span><br><span class="line">    </span><br><span class="line">    thread_info_data_t     thinfo;</span><br><span class="line">    mach_msg_type_number_t thread_info_count;</span><br><span class="line">    </span><br><span class="line">    thread_basic_info_t basic_info_th;</span><br><span class="line">    uint32_t stat_thread = <span class="number">0</span>; <span class="comment">// Mach threads</span></span><br><span class="line">    </span><br><span class="line">    basic_info = (task_basic_info_t)tinfo;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// get threads in the task</span></span><br><span class="line">    kr = task_threads(mach_task_self(), &amp;thread_list, &amp;thread_count);</span><br><span class="line">    <span class="keyword">if</span> (kr != KERN_SUCCESS) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (thread_count &gt; <span class="number">0</span>)</span><br><span class="line">        stat_thread += thread_count;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">long</span> tot_sec = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">long</span> tot_usec = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">float</span> tot_cpu = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> j;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (j = <span class="number">0</span>; j &lt; thread_count; j++)</span><br><span class="line">    &#123;</span><br><span class="line">        thread_info_count = THREAD_INFO_MAX;</span><br><span class="line">        kr = thread_info(thread_list[j], THREAD_BASIC_INFO,</span><br><span class="line">                         (thread_info_t)thinfo, &amp;thread_info_count);</span><br><span class="line">        <span class="keyword">if</span> (kr != KERN_SUCCESS) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        basic_info_th = (thread_basic_info_t)thinfo;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (!(basic_info_th-&gt;flags &amp; TH_FLAGS_IDLE)) &#123;</span><br><span class="line">            tot_sec = tot_sec + basic_info_th-&gt;user_time.seconds + basic_info_th-&gt;system_time.seconds;</span><br><span class="line">            tot_usec = tot_usec + basic_info_th-&gt;user_time.microseconds + basic_info_th-&gt;system_time.microseconds;</span><br><span class="line">            tot_cpu = tot_cpu + basic_info_th-&gt;cpu_usage / (<span class="keyword">float</span>)TH_USAGE_SCALE * <span class="number">100.0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125; <span class="comment">// for each thread</span></span><br><span class="line">    </span><br><span class="line">    kr = vm_deallocate(mach_task_self(), (vm_offset_t)thread_list, thread_count * <span class="keyword">sizeof</span>(thread_t));</span><br><span class="line">    assert(kr == KERN_SUCCESS);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> tot_cpu;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="启动时间"><a href="#启动时间" class="headerlink" title="启动时间"></a>启动时间</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">+ (<span class="keyword">void</span>)load</span><br><span class="line">&#123;</span><br><span class="line">    loadTime = mach_absolute_time();</span><br><span class="line">    mach_timebase_info(&amp;timebaseInfo);</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        __block <span class="keyword">id</span> obs;</span><br><span class="line">        obs = [[<span class="built_in">NSNotificationCenter</span> defaultCenter] addObserverForName:<span class="built_in">UIApplicationDidFinishLaunchingNotification</span></span><br><span class="line">                                                                object:<span class="literal">nil</span> queue:<span class="literal">nil</span></span><br><span class="line">                                                            usingBlock:^(<span class="built_in">NSNotification</span> *note) &#123;</span><br><span class="line">                                                                <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">                                                                    applicationRespondedTime = mach_absolute_time();</span><br><span class="line">                                                                   DDLogInfo(<span class="string">@"VivaVedio_IOS_Start_Time: %.f"</span>, MachTimeToSeconds(applicationRespondedTime - loadTime));</span><br><span class="line">                                                                &#125;);</span><br><span class="line">                                                                [[<span class="built_in">NSNotificationCenter</span> defaultCenter] removeObserver:obs];</span><br><span class="line">                                                            &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="页面渲染耗时"><a href="#页面渲染耗时" class="headerlink" title="页面渲染耗时"></a>页面渲染耗时</h3><p>利用runtime， 将UIViewController 的viewWillAppear， viewDidAppear 进行hook。输出调用的时间间隔。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UIViewController</span>()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>) <span class="built_in">CFTimeInterval</span> viewControllerAppearDuration;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UIViewController</span> (<span class="title">Performance</span>)</span></span><br><span class="line">+ (<span class="keyword">void</span>)load&#123;</span><br><span class="line">    [<span class="keyword">self</span> walle_swizzlingViewWillAppear];</span><br><span class="line">    [<span class="keyword">self</span> walle_swizzlingViewDidAppear];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)walle_swizzlingViewWillAppear</span><br><span class="line">&#123;</span><br><span class="line">    SEL originalSelector = <span class="keyword">@selector</span>(viewWillAppear:);</span><br><span class="line">    SEL swizzledSelector = <span class="keyword">@selector</span>(walle_viewWillAppear:);</span><br><span class="line">    [<span class="keyword">self</span> swizzlingInClass:[<span class="keyword">self</span> <span class="keyword">class</span>] originalSelector:originalSelector swizzledSelector:swizzledSelector];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)walle_swizzlingViewDidAppear</span><br><span class="line">&#123;</span><br><span class="line">    SEL originalSelector = <span class="keyword">@selector</span>(viewDidAppear:);</span><br><span class="line">    SEL swizzledSelector = <span class="keyword">@selector</span>(walle_viewDidAppear:);</span><br><span class="line">    [<span class="keyword">self</span> swizzlingInClass:[<span class="keyword">self</span> <span class="keyword">class</span>] originalSelector:originalSelector swizzledSelector:swizzledSelector];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)walle_viewWillAppear:(<span class="built_in">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span>.viewControllerAppearDuration = <span class="built_in">CACurrentMediaTime</span>();</span><br><span class="line">    [<span class="keyword">self</span> walle_viewWillAppear:animated];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)walle_viewDidAppear:(<span class="built_in">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> walle_viewDidAppear:animated];</span><br><span class="line">    <span class="keyword">self</span>.viewControllerAppearDuration = <span class="built_in">CACurrentMediaTime</span>() - <span class="keyword">self</span>.viewControllerAppearDuration;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">        <span class="built_in">NSString</span> *name = <span class="built_in">NSStringFromClass</span>(<span class="keyword">self</span>.class);</span><br><span class="line">        DDLogInfo(<span class="string">@"View Controller :%@ show time : %g s"</span>, name, <span class="keyword">self</span>.viewControllerAppearDuration);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)swizzlingInClass:(Class)cls originalSelector:(SEL)originalSelector swizzledSelector:(SEL)swizzledSelector</span><br><span class="line">&#123;</span><br><span class="line">    Class clz = cls;</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(clz, originalSelector);</span><br><span class="line">    Method swizzledMethod = class_getInstanceMethod(clz, swizzledSelector);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">BOOL</span> didAddMethod = class_addMethod(clz, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (didAddMethod) &#123;</span><br><span class="line">        class_replaceMethod(clz, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        method_exchangeImplementations(originalMethod, swizzledMethod);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)setViewControllerAppearDuration:(<span class="built_in">CFTimeInterval</span>)viewControllerAppearDuration</span><br><span class="line">&#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, <span class="keyword">@selector</span>(viewControllerAppearDuration), @(viewControllerAppearDuration), OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="built_in">CFTimeInterval</span> )viewControllerAppearDuration</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> [objc_getAssociatedObject(<span class="keyword">self</span>, <span class="keyword">@selector</span>(viewControllerAppearDuration)) doubleValue];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="debug-主线程阻塞"><a href="#debug-主线程阻塞" class="headerlink" title="debug 主线程阻塞"></a>debug 主线程阻塞</h2><ul>
+<li>通过监控Runloop的回调进行监控</li>
+</ul>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">_observer = <span class="built_in">CFRunLoopObserverCreateWithHandler</span>(kCFAllocatorDefault, kCFRunLoopAllActivities, <span class="literal">true</span>, <span class="number">0</span>, ^(<span class="built_in">CFRunLoopObserverRef</span> observer, <span class="built_in">CFRunLoopActivity</span> activity) &#123;</span><br><span class="line">    <span class="keyword">self</span>-&gt;_activity = activity;</span><br><span class="line">    dispatch_semaphore_t semaphore = <span class="keyword">self</span>-&gt;_semaphore;</span><br><span class="line">    dispatch_semaphore_signal(semaphore);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">CFRunLoopAddObserver</span>(<span class="built_in">CFRunLoopGetMain</span>(), _observer, kCFRunLoopCommonModes);</span><br><span class="line"><span class="comment">// 创建信号</span></span><br><span class="line">_semaphore = dispatch_semaphore_create(<span class="number">0</span>);</span><br><span class="line"><span class="comment">// 在子线程监控时长</span></span><br><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, <span class="number">0</span>), ^&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">YES</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 超时250ms 认为卡顿</span></span><br><span class="line">        <span class="keyword">long</span> st = dispatch_semaphore_wait(_semaphore, dispatch_time(DISPATCH_TIME_NOW, <span class="number">50</span>*<span class="built_in">NSEC_PER_MSEC</span>));</span><br><span class="line">        <span class="keyword">if</span> (st != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (_activity == kCFRunLoopBeforeSources || _activity == kCFRunLoopAfterWaiting)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">if</span> (++_countTime &lt; <span class="number">5</span>)</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                <span class="built_in">NSString</span> *track = [BSBacktraceLogger bs_backtraceOfMainThread];</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@"############### Main thread is blocked ###############"</span>);</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>, track);</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@"############### Main thread is blocked ###############"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        _countTime = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/24/iOS 编码规范整理/" rel="next" title="iOS 编码规范整理">
+                <i class="fa fa-chevron-left"></i> iOS 编码规范整理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/19/iOS App 启动优化/" rel="prev" title="iOS App 启动优化">
+                iOS App 启动优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="water">
+          <p class="site-author-name" itemprop="name">water</p>
+           
+              <p class="site-description motion-element" itemprop="description">不积跬步，无以致千里；不积小流，无以成江海。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-应用，性能监控"><span class="nav-number">1.</span> <span class="nav-text">iOS 应用，性能监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#github-源码地址"><span class="nav-number">1.1.</span> <span class="nav-text">github 源码地址</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-应用，性能监控-1"><span class="nav-number">2.</span> <span class="nav-text">iOS 应用，性能监控</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#debug模式"><span class="nav-number">2.1.</span> <span class="nav-text">debug模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#内存"><span class="nav-number">2.1.1.</span> <span class="nav-text">内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FPS"><span class="nav-number">2.1.2.</span> <span class="nav-text">FPS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CPU"><span class="nav-number">2.1.3.</span> <span class="nav-text">CPU</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动时间"><span class="nav-number">2.1.4.</span> <span class="nav-text">启动时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#页面渲染耗时"><span class="nav-number">2.1.5.</span> <span class="nav-text">页面渲染耗时</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#debug-主线程阻塞"><span class="nav-number">2.2.</span> <span class="nav-text">debug 主线程阻塞</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">water</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

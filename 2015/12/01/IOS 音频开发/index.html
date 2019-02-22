@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="hongru">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Water的博客" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="iOS 音频开发  音频基础知识 音频文件计算大小 音频转码   音频基础知识###组成音频文件的组成：文件格式(或者音频容器)  + 数据格式(或者音频编码)。 ###文件格式(或音频容器)是用于形容文件本身的格式。 我们可以通过多种不同的方法为真正的音频数据编码。例如CAF文件便是一种文件格式，它能够包含MP3格式，线性PCM以及其它数据格式的音频。 ###数据格式(或音频编码)我们将从音频编">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 音频开发">
+<meta property="og:url" content="https://hongruqi.github.io/2015/12/01/IOS 音频开发/index.html">
+<meta property="og:site_name" content="Water的博客">
+<meta property="og:description" content="iOS 音频开发  音频基础知识 音频文件计算大小 音频转码   音频基础知识###组成音频文件的组成：文件格式(或者音频容器)  + 数据格式(或者音频编码)。 ###文件格式(或音频容器)是用于形容文件本身的格式。 我们可以通过多种不同的方法为真正的音频数据编码。例如CAF文件便是一种文件格式，它能够包含MP3格式，线性PCM以及其它数据格式的音频。 ###数据格式(或音频编码)我们将从音频编">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-22T07:43:14.407Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 音频开发">
+<meta name="twitter:description" content="iOS 音频开发  音频基础知识 音频文件计算大小 音频转码   音频基础知识###组成音频文件的组成：文件格式(或者音频容器)  + 数据格式(或者音频编码)。 ###文件格式(或音频容器)是用于形容文件本身的格式。 我们可以通过多种不同的方法为真正的音频数据编码。例如CAF文件便是一种文件格式，它能够包含MP3格式，线性PCM以及其它数据格式的音频。 ###数据格式(或音频编码)我们将从音频编">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://hongruqi.github.io/2015/12/01/IOS 音频开发/">
+
+
+
+
+
+  <title>iOS 音频开发 | Water的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Water的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">2019，行者无疆</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2015/12/01/IOS 音频开发/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Water的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS 音频开发</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2015-12-01T00:00:00+08:00">
+                2015-12-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="iOS-音频开发"><a href="#iOS-音频开发" class="headerlink" title="iOS 音频开发"></a>iOS 音频开发</h1><hr>
+<ul>
+<li>音频基础知识</li>
+<li>音频文件计算大小</li>
+<li>音频转码</li>
+</ul>
+<hr>
+<h2 id="音频基础知识"><a href="#音频基础知识" class="headerlink" title="音频基础知识"></a>音频基础知识</h2><p>###组成<br>音频文件的组成：文件格式(或者音频容器)  + 数据格式(或者音频编码)。</p>
+<p>###文件格式(或音频容器)是用于形容文件本身的格式。</p>
+<p>我们可以通过多种不同的方法为真正的音频数据编码。例如CAF文件便是一种文件格式，它能够包含MP3格式，线性PCM以及其它数据格式的音频。</p>
+<p>###数据格式(或音频编码)<br>我们将从音频编码开始阐述(而不是文件格式)，因为编码是最重要的环节。</p>
+<p>###线性PCM：<br>这是表示线性脉冲编码调制，主要是描写用于将模拟声音数据转换成数字格式的技术。简单地说也就是未压缩的数据。因为数据是未压缩的，所以我们便可以最快速地播放出音频，而如果空间不是问题的话这便是iPhone音频的优先代码选择。</p>
+<p>##音频文件计算大小 ##</p>
+<hr>
+<p>声卡对声音的处理质量可以用三个基本参数来衡量，即采样频率、采样位数和声道数。</p>
+<p>####采样频率:<br>是指单位时间内的采样次数。采样频率越大，采样点之间的间隔就越小，数字化后得到的声音就越逼真，但相应的数据量就越大。声卡一般提供11.025kHz、22.05kHz和44.1kHz等不同的采样频率。</p>
+<p>####采样位数：<br>是记录每次采样值数值大小的位数。采样位数通常有8bits或16bits两种，采样位数越大，所能记录声音的变化度就越细腻，相应的数据量就越大。</p>
+<p>####声道数<br>是指处理的声音是单声道还是立体声。单声道在声音处理过程中只有单数据流，而立体声则需要左、右声道的两个数据流。显然，立体声的效果要好，但相应的数据量要比单声道的数据量加倍。</p>
+<p>####声音数据量的计算公式为：<br>数据量（字节/秒）= (采样频率（Hz）× 采样位数（bit） × 声道数)/ 8</p>
+<p><em>单声道的声道数为1，立体声的声道数为2。</em></p>
+<p>【例1】请计算对于5分钟双声道、16位采样位数、44.1kHz采样频率声音的不压缩数据量是多少？<br>根据公式：数据量=（采样频率×采样位数×声道数×时间）/8<br>得，数据量(MB)=[44.1×1000×16×2×（5×60）] /（8×1024×1024）=50.47MB<br>计算时要注意几个单位的换算细节：<br>时间单位换算：1分=60秒<br>采样频率单位换算：1kHz=1000Hz<br>数据量单位换算：1MB=1024×1024=1048576B</p>
+<p>【例2】请计算对于双声道立体声、采样频率为44.1kHz、采样位数为16位的激光唱盘（CD-A），用一个650MB的CD-ROM可存放多长时间的音乐？<br>已知音频文件大小的计算公式如下：<br>文件的字节数/每秒=采样频率（Hz）X采样位数（位）X声道数/8<br>根据上面的公式计算一秒钟时间内的不压缩数据量：(44.1×1000×16×2)/8=0.168MB/s<br>那么，一个650MB的CD-ROM可存放的时间为：（650/0.168）/（60×60）=1.07小时。</p>
+<hr>
+<p>##IOS 音频转码 ##</p>
+<p>音频转码使用的框架为：AudioToolBox</p>
+<p>###内存转码： ###<br>    使用函数： AudioConverterFillComplexBuffer<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">    - (void)handleAudioPackets:(const void *)inputData</span><br><span class="line">             numberOfBytes:(UInt32)numberOfBytes</span><br><span class="line">           numberOfPackets:(UInt32)numberOfPackets</span><br><span class="line">        packetDescriptions:(AudioStreamPacketDescription *)packetDescriptions</span><br><span class="line">&#123;</span><br><span class="line">    if (!_audioFileStream || !_parseAudioHeader || !_decodeConverterRef) return;</span><br><span class="line">    </span><br><span class="line">    AudioConvertInfo convertInfo = (AudioConvertInfo)&#123;</span><br><span class="line">        .done = NO,</span><br><span class="line">        .numberOfPackets = numberOfPackets,</span><br><span class="line">        .packetDescriptions = packetDescriptions,</span><br><span class="line">        .audioBuffer = (AudioBuffer)&#123;</span><br><span class="line">            .mData = (void *)inputData,</span><br><span class="line">            .mDataByteSize = numberOfBytes,</span><br><span class="line">            .mNumberChannels = _sourceAsbd.mChannelsPerFrame</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">    </span><br><span class="line">    AudioBufferList decodedData;</span><br><span class="line">    decodedData.mNumberBuffers = 1;</span><br><span class="line">    decodedData.mBuffers[0].mNumberChannels = _canonicalAsbd.mChannelsPerFrame;</span><br><span class="line">    decodedData.mBuffers[0].mDataByteSize = _decodeBufferSize;</span><br><span class="line">    decodedData.mBuffers[0].mData = _decodeBuffer;</span><br><span class="line">    </span><br><span class="line">    UInt32 ioOutputDataPackets1, ioOutputDataPackets2;</span><br><span class="line">    OSStatus decodingStatus, encodingStatus;</span><br><span class="line">    </span><br><span class="line">    while (1)</span><br><span class="line">    &#123;</span><br><span class="line">        ioOutputDataPackets1 = numberOfPackets;</span><br><span class="line">        </span><br><span class="line">        decodingStatus = AudioConverterFillComplexBuffer(_decodeConverterRef, AudioConverterCallback, (void*)&amp;convertInfo, &amp;ioOutputDataPackets1, &amp;decodedData, NULL);</span><br><span class="line">        </span><br><span class="line">        if (decodingStatus == OS_STATUS_DONE || decodingStatus == 0)</span><br><span class="line">        &#123;</span><br><span class="line">            if (ioOutputDataPackets1 &gt; 0)</span><br><span class="line">            &#123;</span><br><span class="line">                // Start encoding</span><br><span class="line">                </span><br><span class="line">                AudioConvertInfo encodeConvertInfo = (AudioConvertInfo)&#123;</span><br><span class="line">                    .done = NO,</span><br><span class="line">                    .numberOfPackets = ioOutputDataPackets1,</span><br><span class="line">                    .packetDescriptions = NULL,</span><br><span class="line">                    .audioBuffer = (AudioBuffer)&#123;</span><br><span class="line">                        .mData = decodedData.mBuffers[0].mData,</span><br><span class="line">                        .mDataByteSize = decodedData.mBuffers[0].mDataByteSize,</span><br><span class="line">                        .mNumberChannels = _canonicalAsbd.mChannelsPerFrame</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;;</span><br><span class="line">                </span><br><span class="line">                AudioBufferList encodedData;</span><br><span class="line">                encodedData.mNumberBuffers = 1;</span><br><span class="line">                encodedData.mBuffers[0].mNumberChannels = _destinationAsbd.mChannelsPerFrame;</span><br><span class="line">                encodedData.mBuffers[0].mDataByteSize = _encodeBufferSize;</span><br><span class="line">                encodedData.mBuffers[0].mData = _encodeBuffer;</span><br><span class="line">                </span><br><span class="line">                while (1)</span><br><span class="line">                &#123;</span><br><span class="line">                    ioOutputDataPackets2 = _encodePacketsPerBuffer;</span><br><span class="line">                    </span><br><span class="line">                    encodingStatus = AudioConverterFillComplexBuffer(_encodeConverterRef, AudioConverterCallback, (void*)&amp;encodeConvertInfo, &amp;ioOutputDataPackets2, &amp;encodedData, _encodePacketDescriptions);</span><br><span class="line">                    </span><br><span class="line">                    if (encodingStatus == OS_STATUS_DONE || encodingStatus == 0)</span><br><span class="line">                    &#123;</span><br><span class="line">                        //一个buffer 转码成功</span><br><span class="line">                    &#125;</span><br><span class="line">                    else</span><br><span class="line">                    &#123;</span><br><span class="line">                        [self failureOccurred];</span><br><span class="line">                        return;</span><br><span class="line">                    &#125;</span><br><span class="line">                    </span><br><span class="line">                    if (encodingStatus == OS_STATUS_DONE)</span><br><span class="line">                    &#123;</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                // End encoding</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            [self failureOccurred];</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        if (decodingStatus == OS_STATUS_DONE)</span><br><span class="line">        &#123;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="文件转码"><a href="#文件转码" class="headerlink" title="文件转码"></a>文件转码</h3><pre><code>使用函数 ExtAudioFileRead
+</code></pre><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> startConvert(ExtAudioConverterSettings* settings)&#123;</span><br><span class="line">    <span class="comment">//Determine the proper buffer size and calculate number of packets per buffer</span></span><br><span class="line">    <span class="comment">//for CBR and VBR format</span></span><br><span class="line">    <span class="built_in">UInt32</span> sizePerBuffer = <span class="number">32</span>*<span class="number">1024</span>;<span class="comment">//32KB is a good starting point</span></span><br><span class="line">    <span class="built_in">UInt32</span> framesPerBuffer = sizePerBuffer/<span class="keyword">sizeof</span>(SInt16);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// allocate destination buffer</span></span><br><span class="line">    SInt16 *outputBuffer = (SInt16 *)malloc(<span class="keyword">sizeof</span>(SInt16) * sizePerBuffer);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        AudioBufferList outputBufferList;</span><br><span class="line">        outputBufferList.mNumberBuffers              = <span class="number">1</span>;</span><br><span class="line">        outputBufferList.mBuffers[<span class="number">0</span>].mNumberChannels = settings-&gt;outputFormat.mChannelsPerFrame;</span><br><span class="line">        outputBufferList.mBuffers[<span class="number">0</span>].mDataByteSize   = sizePerBuffer;</span><br><span class="line">        outputBufferList.mBuffers[<span class="number">0</span>].mData           = outputBuffer;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">UInt32</span> framesCount = framesPerBuffer;</span><br><span class="line">        </span><br><span class="line">        CheckError(ExtAudioFileRead(settings-&gt;inputFile,</span><br><span class="line">                                    &amp;framesCount,</span><br><span class="line">                                    &amp;outputBufferList),</span><br><span class="line">                   <span class="string">"ExtAudioFileRead failed"</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (framesCount==<span class="number">0</span>) &#123;</span><br><span class="line">            printf(<span class="string">"Done reading from input file\n"</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        CheckError(ExtAudioFileWrite(settings-&gt;outputFile,</span><br><span class="line">                                     framesCount,</span><br><span class="line">                                     &amp;outputBufferList),</span><br><span class="line">                   <span class="string">"ExtAudioFileWrite failed"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="代码下载"><a href="#代码下载" class="headerlink" title="代码下载"></a><a href="http://download.csdn.net/download/qihongru1227/9326777" target="_blank" rel="noopener">代码下载</a></h3><h2 id="外部链接"><a href="#外部链接" class="headerlink" title="外部链接"></a>外部链接</h2><p><a href="https://developer.apple.com/library/ios/documentation/MusicAudio/Conceptual/CoreAudioOverview/SupportedAudioFormatsMacOSX/SupportedAudioFormatsMacOSX.html" target="_blank" rel="noopener">苹果官网</a></p>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/07/11/[IOS 防止Crash 组件WTSafeGuard ](https---github.com-hongruqi-SafeGuard)/" rel="prev" title="iOS 降低线上版本Crash率">
+                iOS 降低线上版本Crash率 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="water">
+          <p class="site-author-name" itemprop="name">water</p>
+           
+              <p class="site-description motion-element" itemprop="description">不积跬步，无以致千里；不积小流，无以成江海。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#iOS-音频开发"><span class="nav-number">1.</span> <span class="nav-text">iOS 音频开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#音频基础知识"><span class="nav-number">1.1.</span> <span class="nav-text">音频基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#文件转码"><span class="nav-number">1.1.1.</span> <span class="nav-text">文件转码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码下载"><span class="nav-number">1.1.2.</span> <span class="nav-text">代码下载</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外部链接"><span class="nav-number">1.2.</span> <span class="nav-text">外部链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">water</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
