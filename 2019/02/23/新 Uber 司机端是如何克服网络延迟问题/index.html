@@ -96,22 +96,22 @@
 
 
 
-<meta name="description" content="title:[译] 新 Uber 司机端是如何克服网络延迟问题date:2019-02-19 categories:翻译  原文地址：How Uber’s New Driver App Overcomes Network Lag 译文出自：猛犸象 译者：Hanwp 校对者：amy123shy   新 Uber 司机端是如何克服网络延迟问题 本文是 Uber 的客户端工程师团队讲述了如何开发最新版">
+<meta name="description" content="title:新 Uber 司机端是如何克服网络延迟问题date:2019-02-19 categories:翻译新 Uber 司机端是如何克服网络延迟问题 本文是 Uber 的客户端工程师团队讲述了如何开发最新版本司机端系列文章中的第三篇，该系列代号 Carbon ，是我们共享出行业务的核心。包括其它功能在内，Uber 司机端使得超过 300 万名司机可以查看费用、里程以及收益情况。2017 年">
 <meta property="og:type" content="article">
 <meta property="og:title" content="猛犸象团队博客">
 <meta property="og:url" content="https://hongruqi.github.io/2019/02/23/新 Uber 司机端是如何克服网络延迟问题/index.html">
 <meta property="og:site_name" content="猛犸象团队博客">
-<meta property="og:description" content="title:[译] 新 Uber 司机端是如何克服网络延迟问题date:2019-02-19 categories:翻译  原文地址：How Uber’s New Driver App Overcomes Network Lag 译文出自：猛犸象 译者：Hanwp 校对者：amy123shy   新 Uber 司机端是如何克服网络延迟问题 本文是 Uber 的客户端工程师团队讲述了如何开发最新版">
+<meta property="og:description" content="title:新 Uber 司机端是如何克服网络延迟问题date:2019-02-19 categories:翻译新 Uber 司机端是如何克服网络延迟问题 本文是 Uber 的客户端工程师团队讲述了如何开发最新版本司机端系列文章中的第三篇，该系列代号 Carbon ，是我们共享出行业务的核心。包括其它功能在内，Uber 司机端使得超过 300 万名司机可以查看费用、里程以及收益情况。2017 年">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_feature_image-696x392.jpg">
 <meta property="og:image" content="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_Figure-01.gif">
 <meta property="og:image" content="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_Figure-02a.png">
 <meta property="og:image" content="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_Figure-02b.gif">
 <meta property="og:image" content="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_Figure-03.png">
-<meta property="og:updated_time" content="2019-02-23T06:16:17.612Z">
+<meta property="og:updated_time" content="2019-02-23T06:22:04.971Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="猛犸象团队博客">
-<meta name="twitter:description" content="title:[译] 新 Uber 司机端是如何克服网络延迟问题date:2019-02-19 categories:翻译  原文地址：How Uber’s New Driver App Overcomes Network Lag 译文出自：猛犸象 译者：Hanwp 校对者：amy123shy   新 Uber 司机端是如何克服网络延迟问题 本文是 Uber 的客户端工程师团队讲述了如何开发最新版">
+<meta name="twitter:description" content="title:新 Uber 司机端是如何克服网络延迟问题date:2019-02-19 categories:翻译新 Uber 司机端是如何克服网络延迟问题 本文是 Uber 的客户端工程师团队讲述了如何开发最新版本司机端系列文章中的第三篇，该系列代号 Carbon ，是我们共享出行业务的核心。包括其它功能在内，Uber 司机端使得超过 300 万名司机可以查看费用、里程以及收益情况。2017 年">
 <meta name="twitter:image" content="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_feature_image-696x392.jpg">
 
 
@@ -369,16 +369,8 @@
 
       
         <hr>
-<p>title:[译] 新 Uber 司机端是如何克服网络延迟问题<br>date:2019-02-19</p>
-<h2 id="categories-翻译"><a href="#categories-翻译" class="headerlink" title="categories:翻译"></a>categories:翻译</h2><blockquote>
-<ul>
-<li>原文地址：<a href="https://eng.uber.com/driver-app-optimistic-mode/" target="_blank" rel="noopener">How Uber’s New Driver App Overcomes Network Lag</a></li>
-<li>译文出自：<a href="https://ddmammoth.github.io" target="_blank" rel="noopener">猛犸象</a></li>
-<li>译者：<a href="https://github.com/Hanwp" target="_blank" rel="noopener">Hanwp</a></li>
-<li>校对者：<a href="https://github.com/amy123shy" target="_blank" rel="noopener">amy123shy</a></li>
-</ul>
-</blockquote>
-<h1 id="新-Uber-司机端是如何克服网络延迟问题"><a href="#新-Uber-司机端是如何克服网络延迟问题" class="headerlink" title="新 Uber 司机端是如何克服网络延迟问题"></a>新 Uber 司机端是如何克服网络延迟问题</h1><p><a href="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_feature_image.jpg" target="_blank" rel="noopener"><img src="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_feature_image-696x392.jpg" alt="Carbon: Optimistic Mode article feature image" title="Carbon: Optimistic Mode article feature image"></a></p>
+<p>title:新 Uber 司机端是如何克服网络延迟问题<br>date:2019-02-19</p>
+<h2 id="categories-翻译"><a href="#categories-翻译" class="headerlink" title="categories:翻译"></a>categories:翻译</h2><h1 id="新-Uber-司机端是如何克服网络延迟问题"><a href="#新-Uber-司机端是如何克服网络延迟问题" class="headerlink" title="新 Uber 司机端是如何克服网络延迟问题"></a>新 Uber 司机端是如何克服网络延迟问题</h1><p><a href="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_feature_image.jpg" target="_blank" rel="noopener"><img src="https://1fykyq3mdn5r21tpna3wkdyi-wpengine.netdna-ssl.com/wp-content/uploads/2018/11/Carbon_Optimistic_Mode_feature_image-696x392.jpg" alt="Carbon: Optimistic Mode article feature image" title="Carbon: Optimistic Mode article feature image"></a></p>
 <p><strong>本文是 Uber 的客户端工程师团队讲述了如何开发最新版本司机端系列文章中的第三篇，该系列代号 <a href="https://eng.uber.com/tag/carbon/" target="_blank" rel="noopener">Carbon</a> ，是我们共享出行业务的核心。包括其它功能在内，Uber 司机端使得超过 300 万名司机可以查看费用、里程以及收益情况。2017 年我们结合司机的反馈开始对司机端进行重新设计，并在 2018 年 9 月份启动了该项目。</strong></p>
 <p>城市建筑和无线数据技术的竞争意味着在城市中存在一些手机没有信号的黑色区域。这种黑色区域景区更为常见，导致网络质量和阻塞程度频繁的变化。这些问题尤其影响着那些接送乘客的司机们。</p>
 <p>可以举一个合适的例子来说明这种问题。假设一个司机到达了非常拥挤的班加罗尔机场终点。乘客想支付现金，司机需要在应用里面操作完成订单来查看最终的金额。把车停在路边，司机端却无法联网。乘客匆忙赶飞机，不能联网就意味着司机就不能结束行程并查看最终的金额。司机可能会继续开下去，增加了额外的时间，也可能增加了行程花费，给司机和乘客都带来了不便。</p>
@@ -526,7 +518,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
