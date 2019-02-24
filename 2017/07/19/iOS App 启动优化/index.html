@@ -447,7 +447,7 @@
       
 
       
-        <h1 id="iOS-App-启动优化"><a href="#iOS-App-启动优化" class="headerlink" title="iOS App 启动优化"></a>iOS App 启动优化</h1><h2 id="技术调研"><a href="#技术调研" class="headerlink" title="技术调研"></a>技术调研</h2><h3 id="启动时间计算公式"><a href="#启动时间计算公式" class="headerlink" title="启动时间计算公式"></a>启动时间计算公式</h3><figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">App总启动时间 = t<span class="number">1</span><span class="comment">(main()</span>之前的加载时间) + t<span class="number">2</span><span class="comment">(main()</span>之后的加载时间)。</span><br></pre></td></tr></table></figure>
+        <h1 id="iOS-App-启动优化"><a href="#iOS-App-启动优化" class="headerlink" title="iOS App 启动优化"></a>iOS App 启动优化</h1><h2 id="技术调研"><a href="#技术调研" class="headerlink" title="技术调研"></a>技术调研</h2><h3 id="启动时间计算公式"><a href="#启动时间计算公式" class="headerlink" title="启动时间计算公式"></a>启动时间计算公式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">App总启动时间 = t1(main()之前的加载时间) + t2(main()之后的加载时间)。</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p>t1 = 系统dylib(动态链接库)和自身App可执行文件的加载； </p>
 </blockquote>
