@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=7.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.0.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.0.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.0.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.0.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false,"dimmer":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Introduction to asynchronous programmingIf you tried to explain asynchronous programming in a simple, down to earth language, you might come up with something along the lines of the following.An iOS a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hongru&#39;s 博客">
+<meta property="og:url" content="https://hongruqi.github.io/2019/02/26/Introduction to asynchronous programming/index.html">
+<meta property="og:site_name" content="hongru&#39;s 博客">
+<meta property="og:description" content="Introduction to asynchronous programmingIf you tried to explain asynchronous programming in a simple, down to earth language, you might come up with something along the lines of the following.An iOS a">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-02-26T03:17:13.086Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="hongru&#39;s 博客">
+<meta name="twitter:description" content="Introduction to asynchronous programmingIf you tried to explain asynchronous programming in a simple, down to earth language, you might come up with something along the lines of the following.An iOS a">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="hongru's 博客" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="https://hongruqi.github.io/2019/02/26/Introduction to asynchronous programming/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title> | hongru's 博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">hongru's 博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">重剑无锋，大巧不工</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://hongruqi.github.io/2019/02/26/Introduction to asynchronous programming/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="water">
+      <meta itemprop="description" content="“急不择言”的病源，并不在没有想的工夫，而在有工夫的时候没有想。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="hongru's 博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-26 11:17:13" itemprop="dateCreated datePublished" datetime="2019-02-26T11:17:13+08:00">2019-02-26</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+              
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+            
+                <span class="post-meta-item-text">评论数：</span>
+                <a href="/2019/02/26/Introduction to asynchronous programming/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count valine-comment-count" data-xid="/2019/02/26/Introduction to asynchronous programming/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+            <span id="/2019/02/26/Introduction to asynchronous programming/" class="leancloud_visitors" data-flag-title>
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读次数：</span>
+              
+                <span class="leancloud-visitors-count"></span>
+            </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Introduction-to-asynchronous-programming"><a href="#Introduction-to-asynchronous-programming" class="headerlink" title="Introduction to asynchronous programming"></a>Introduction to asynchronous programming</h1><p>If you tried to explain asynchronous programming in a simple, down to earth language, you might come up with something along the lines of the following.<br>An iOS app, at any moment, might be doing many different things: • Reacting to button taps</p>
+<ul>
+<li>Animating the keyboard as a text field loses focus</li>
+<li>Downloading a large photo from the Internet</li>
+<li>Saving bits of data to disk • Playing audio</li>
+<li>And much more…</li>
+</ul>
+<p>All of these things seemingly happen at the same time. Whenever the keyboard animates out of the screen, the audio in your app doesn’t pause until the animation has finished, right?</p>
+<p>All the different bits of your program don’t block each other’s execution. iOS offers you all kind of APIs that allow you to perform different pieces of work on different threads and perform them across the different cores of the device’s CPU.<br>Writing code that truly runs in parallel, however, is rather complex, especially when different bits of code need to work with the same pieces of data. It’s hard to argue about which piece of code updates the data first, or which code read the latest value.</p>
+<h2 id="Cocoa-and-UIKit-Asynchronous-APIs"><a href="#Cocoa-and-UIKit-Asynchronous-APIs" class="headerlink" title="Cocoa and UIKit Asynchronous APIs"></a>Cocoa and UIKit Asynchronous APIs</h2><p>Apple has provided lots of APIs in the iOS SDK that help you write asynchronous code. You’ve used these in your projects, and probably haven’t given them a second thought because they are so fundamental to writing mobile apps.<br>You’ve probably used most of the following:</p>
+<ul>
+<li><p><strong>NotificationCenter</strong>: To execute a piece of code any time an event of interest happens, such as the user changing the orientation of the device, or the software keyboard showing or hiding on the screen.</p>
+</li>
+<li><p><strong>The delegate pattern</strong>: To define methods to be executed by another class or API at arbitrary times. For example, in your application delegate you define what should happen when a new remote notification arrives, but you have no idea when this piece of code will be executed, or how many times it will execute.</p>
+</li>
+<li><p><strong>Grand Central Dispatch</strong>: To help you abstract the execution of pieces of work. You can schedule code to be executed sequentially in a serial queue, or run a multitude of tasks concurrently on different queues with different priorities.</p>
+</li>
+<li><p><strong>Closures</strong>: To create detached pieces of code that you can pass between classes so each class can decide whether to execute it or not, how many times, and in what context.</p>
+</li>
+</ul>
+<p>Since most of your typical classes would do something asynchronously, and all UI components are inherently asynchronous, it’s impossible to make assumptions in what order the <strong>entirety</strong> of your app code will get executed.</p>
+<p>After all, your app’s code runs differently depending on various external factors, such as user input, network activity, or other OS events. Each time the user fires up your app, the code may run in a completely different order depending on those external factors. (Well, except for the case when you have an army of robots testing your app, then you can expect all events to happen with precise, kill-bot synchronization.)</p>
+<p>We’re definitely not saying that writing good asynchronous code is impossible. After all, the great APIs from Apple listed above are very advanced, very specialized for the task, and to be fair, quite powerful compared to what other platforms offer.</p>
+<p>The issue is that complex asynchronous code becomes very difficult to write in part because of the variety of APIs that Apple’s SDK offers:</p>
+<p>Using delegates requires you to adopt one pattern, another you’ll use for closures, yet another approach for subscribing to NotificationCenter, and so on. Since there is no universal language across all the asynchronous APIs, reading and understanding the code, and reasoning about its execution, becomes difficult.</p>
+<p>To wrap up this section and put the discussion into a bit more context, you’ll compare two pieces of code: one synchronous, and one asynchronous.</p>
+<h3 id="Synchronous-code"><a href="#Synchronous-code" class="headerlink" title="Synchronous code"></a>Synchronous code</h3><p>Performing an operation for each element of an array is something you’ve done plenty of times. It’s a very simple but solid building block of app logic because it guarantees two things: it executes synchronously, and the collection is immutable while you iterate over it.</p>
+<p>Take a moment to think about what this implies. When you iterate over a collection, you don’t need to check that all elements are still there, and you don’t need to rewind back in case another thread inserts an element at the start of the collection. You assume you always iterate over the collection in its entirety at the beginning of the loop.</p>
+<p>If you want to play a bit more with these aspects of the for loop, try this in a playground:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var array = [1, 2, 3]</span><br><span class="line">for number in array &#123;</span><br><span class="line">  print(number)</span><br><span class="line">  array = [4, 5, 6]</span><br><span class="line">&#125;</span><br><span class="line">print(array)</span><br></pre></td></tr></table></figure>
+<p>Is array mutable inside the for body? Does the collection that the loop iterates over ever change? What’s the sequence of execution of all commands? Can you modify number if you need to?</p>
+<p>###Asynchronous code<br>Consider similar code, but assume each iteration happens as a reaction to a tap on a button. As the user repeatedly taps on the button, the app prints out the next element in an array:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">var array = [1, 2, 3]</span><br><span class="line">var currentIndex = 0</span><br><span class="line">//this method is connected in IB to a button</span><br><span class="line">@IBAction func printNext(_ sender: Any) &#123;</span><br><span class="line">  print(array[currentIndex])</span><br><span class="line">  if currentIndex != array.count-1 &#123;</span><br><span class="line">    currentIndex += 1</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Think about this code in the same context as you did for the previous one. As the user taps the button, will that print all of the array’s elements? You really can’t say. Another piece of asynchronous code might remove the last element, before it’s been printed.</p>
+<p>Or another piece of code might insert a new element at the start of the collection after you’ve moved on.</p>
+<p>Also, you assume only printNext(_:) will ever change currentIndex, but another piece of code might modify currentIndex as well — perhaps some clever code you added at some point after crafting the above function.<br>You’ve likely realized that some of the core issues with writing asynchronous code are: a) the order in which pieces of work are performed and b) shared mutable data.</p>
+<p>Luckily, these are some of RxSwift’s strong suits!</p>
+<p>Next, you need a good primer on the language that will help you start understanding how RxSwift works, what problems it solves, and ultimately let you move past this gentle introduction and into writing your first Rx code in the next chapter.</p>
+<p>##Asynchronous programming glossary</p>
+<p>Some of the language in RxSwift is so tightly bound to asynchronous, reactive, and/ or functional programming that it will be easier if you first understand the following foundational terms.</p>
+<p>In general, RxSwift tries to address the following issues:</p>
+<p>###1. State, and specifically, shared mutable state</p>
+<p>State is somewhat difficult to define. To understand state, consider the following practical example.</p>
+<p>When you start your laptop it runs just fine, but after you use it for a few days or even weeks, it might start behaving weirdly or abruptly hang and refuse to speak to you. The hardware and software remains the same, but what’s changed is the state. As soon as you restart, the same combination of hardware and software will work just fine once more.</p>
+<p>The data in memory, the one stored on disk, all the artifacts of reacting to user input, all traces that remain after fetching data from cloud services — the sum of these is the state of your laptop.</p>
+<p>Managing the state of your app, especially when shared between multiple asynchronous components, is one of the issues you’ll learn how to handle in this book.</p>
+<p>###2. Imperative programming</p>
+<p>Imperative programming is a programming paradigm that uses statements to change the program’s state. Much like you would use imperative language while playing with your dog — “Fetch! Lay down! Play dead!” — you use imperative code to tell the app exactly when and how to do things.</p>
+<p>Imperative code is similar to the code that your computer understands. All the CPU does is follow lengthy sequences of simple instructions. The issue is that it gets challenging for humans to write imperative code for complex, asynchronous apps — especially when shared mutable state is involved.</p>
+<p>For example take this code, found in viewDidAppear(_:) of an iOS view controller:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">override func viewDidAppear(_ animated: Bool) &#123;</span><br><span class="line">  super.viewDidAppear(animated)</span><br><span class="line">  setupUI()</span><br><span class="line">  connectUIControls()</span><br><span class="line">  createDataSource()</span><br><span class="line">  listenForChanges()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>There’s no telling what all these methods do. Do they update some properties of the view controller itself? And more disturbingly, are they called in the right order? Maybe somebody inadvertently swapped the order of these method calls and committed the change to source control. Now the app might behave differently because of the swapped calls.</p>
+<p>###3. Side effects</p>
+<p>Now that you know more about mutable state and imperative programming, you can pin down most issues with those two things to side effects.</p>
+<p>Side effects are any change to the state outside of the current scope. For example, consider the last piece of code in the example above. connectUIControls() probably attaches some kind of event handler to some UI components. This causes a side effect, as it changes the state of the view: the app behaves one way before executing connectUIControls(), and differently after that.</p>
+<p>Any time you modify data stored on disk or update the text of a label on screen, you cause side effects.</p>
+<p>Side effects are not bad in themselves. After all, causing side effects is the ultimate goal of any program! You need to change the state of the world somehow after your program has finished executing. Running for a while and doing nothing makes for a pretty useless app. :]</p>
+<p>tututu</p>
+<p>The issue with producing side effects is doing it in a controlled way. You need to be able to determine which pieces of code cause side effects, and which simply process and output data.<br>RxSwift tries to address the issues (or problems) listed above by tackling the following couple of concepts.</p>
+<p>###4. Declarative code</p>
+<p>In imperative programming you change state at will. In functional code you don’t cause any side effects. Since you don’t live in a perfect world, the balance lies somewhere in the middle. RxSwift combines some of the best aspects of imperative code and functional code.</p>
+<p>Declarative code lets you define pieces of behavior, and RxSwift will run these behaviors any time there’s a relevant event and provide them an immutable, isolated data input to work with.</p>
+<p>This way you can work with asynchronous code, but make the same assumptions as in a simple for loop: that you’re working with immutable data and you can execute code in sequential, deterministic way.</p>
+<p>###5. Reactive systems</p>
+<p>Reactive systems is a rather abstract term and covers web or iOS apps that exhibit most or all of the following qualities:</p>
+<ul>
+<li><p><strong>Responsive</strong>: Always keep the UI up to date, representing the latest app state.</p>
+</li>
+<li><p><strong>Resilient</strong>: Each behavior is defined in isolation and provides for flexible error recovery.</p>
+</li>
+<li><p><strong>Elastic</strong>: The code handles varied workload, often implementing features such as lazy pull-driven data collections, event throttling, and resource sharing.</p>
+</li>
+<li><p><strong>Message driven</strong>: Components use message-based communication for improved<br>reusability and isolation, decoupling the lifecycle and implementation of classes.</p>
+</li>
+</ul>
+<p>Now that you have a good understanding of the problems RxSwift helps solve and how it approaches these issues, it’s time to talk about the building blocks of Rx and how they play together.</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/26/你好 RxSwift/" rel="next" title>
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+    <div style="text-align:center;color: #ccc;font-size:14px;">
+        ---------Thanks for your attention---------
+    </div>
+  
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.gif" alt="water">
+            
+              <p class="site-author-name" itemprop="name">water</p>
+              <p class="site-description motion-element" itemprop="description">“急不择言”的病源，并不在没有想的工夫，而在有工夫的时候没有想。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction-to-asynchronous-programming"><span class="nav-number">1.</span> <span class="nav-text">Introduction to asynchronous programming</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cocoa-and-UIKit-Asynchronous-APIs"><span class="nav-number">1.1.</span> <span class="nav-text">Cocoa and UIKit Asynchronous APIs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Synchronous-code"><span class="nav-number">1.1.1.</span> <span class="nav-text">Synchronous code</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">water</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v7.0.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=7.0.0"></script>
+
+  <script src="/js/src/motion.js?v=7.0.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=7.0.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=7.0.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=7.0.0"></script>
+<script src="/js/src/post-details.js?v=7.0.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=7.0.0"></script>
+
+
+  
+  
+  
+
+<script src="//cdn1.lncld.net/static/js/3.11.1/av-min.js"></script>
+
+
+
+<script src="//unpkg.com/valine/dist/Valine.min.js"></script>
+
+<script>
+  var GUEST = ['nick', 'mail', 'link'];
+  var guest = 'nick,mail,link';
+  guest = guest.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#comments',
+    verify: false,
+    notify: false,
+    appId: 'eb1yBD0EyaLq44S715qVGI48-gzGzoHsz',
+    appKey: 'VnEiVK5rguyNCK1jtycmco1B',
+    placeholder: '留下你的足迹',
+    avatar: 'mm',
+    meta: guest,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+</script>
+
+
+
+
+  
+
+
+  
+
+
+
+
+  
+  
+  <script>
+    
+    function addCount(Counter) {
+      var $visitors = $('.leancloud_visitors');
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+
+      Counter('get', '/classes/Counter', { where: JSON.stringify({ url }) })
+        .done(function({ results }) {
+          if (results.length > 0) {
+            var counter = results[0];
+            
+            Counter('put', '/classes/Counter/' + counter.objectId, JSON.stringify({ time: { '__op': 'Increment', 'amount': 1 } }))
+            
+              .done(function() {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.time + 1);
+              })
+            
+              .fail(function ({ responseJSON }) {
+                console.log('Failed to save Visitor num, with error message: ' + responseJSON.error);
+              })
+          } else {
+            
+              var $element = $(document.getElementById(url));
+              $element.find('.leancloud-visitors-count').text('Counter not initialized! More info at console err msg.');
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .fail(function ({ responseJSON }) {
+          console.log('LeanCloud Counter Error: ' + responseJSON.code + ' ' + responseJSON.error);
+        });
+    }
+    
+
+    $(function() {
+      $.get('https://app-router.leancloud.cn/2/route?appId=' + 'eb1yBD0EyaLq44S715qVGI48-gzGzoHsz')
+        .done(function({ api_server }) {
+          var Counter = function(method, url, data) {
+            return $.ajax({
+              method: method,
+              url: 'https://' + api_server + '/1.1' + url,
+              headers: {
+                'X-LC-Id': 'eb1yBD0EyaLq44S715qVGI48-gzGzoHsz',
+                'X-LC-Key': 'VnEiVK5rguyNCK1jtycmco1B',
+                'Content-Type': 'application/json',
+              },
+              data: data
+            });
+          };
+          
+            addCount(Counter);
+          
+        });
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
